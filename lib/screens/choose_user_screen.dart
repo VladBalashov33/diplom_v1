@@ -1,4 +1,6 @@
 import 'package:diplom/bloc/choose_user_bloc/choose_user_bloc.dart';
+import 'package:diplom/models/user.dart';
+import 'package:diplom/screens/detail_user_screen.dart';
 import 'package:diplom/utils/constants.dart';
 import 'package:diplom/widgets/bloc_provider_builder.dart';
 import 'package:diplom/widgets/widgets.dart';
@@ -24,36 +26,7 @@ class ChooseUserScreen extends StatelessWidget {
                 padding: Constants.listPadding,
                 itemCount: users.length,
                 itemBuilder: (context, index) {
-                  final user = users[index];
-                  return Row(
-                    children: [
-                      CachedImage(
-                        user.photo,
-                        height: 93,
-                        width: 113,
-                      ),
-                      const Padding(padding: EdgeInsets.only(left: 8)),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            user.username,
-                            style: Theme.of(context).textTheme.headline6,
-                          ),
-                          const Padding(padding: EdgeInsets.only(top: 4)),
-                          Text(
-                            user.name,
-                            style: Theme.of(context).textTheme.subtitle1,
-                          ),
-                          const Padding(padding: EdgeInsets.only(top: 2)),
-                          Text(
-                            'Подписчики: ${user.subscribers}',
-                            style: Theme.of(context).textTheme.bodyText2,
-                          ),
-                        ],
-                      )
-                    ],
-                  );
+                  return _ListItem(user: users[index]);
                 },
                 separatorBuilder: (context, index) {
                   return const Divider(
@@ -66,6 +39,58 @@ class ChooseUserScreen extends StatelessWidget {
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+class _ListItem extends StatelessWidget {
+  const _ListItem({
+    required this.user,
+    Key? key,
+  }) : super(key: key);
+
+  final User user;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => DetailUserScreen(user: user),
+          ),
+        );
+      },
+      behavior: HitTestBehavior.opaque,
+      child: Row(
+        children: [
+          CachedImage(
+            user.photo,
+            height: 93,
+            width: 113,
+          ),
+          const Padding(padding: EdgeInsets.only(left: 8)),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                user.username,
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              const Padding(padding: EdgeInsets.only(top: 4)),
+              Text(
+                user.name,
+                style: Theme.of(context).textTheme.subtitle1,
+              ),
+              const Padding(padding: EdgeInsets.only(top: 2)),
+              Text(
+                'Подписчики: ${user.subscribers}',
+                style: Theme.of(context).textTheme.bodyText2,
+              ),
+            ],
+          )
+        ],
       ),
     );
   }

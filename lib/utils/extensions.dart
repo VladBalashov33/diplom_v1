@@ -62,9 +62,9 @@ extension WidgetExtension on Widget {
           ? WaterDropHeader(
               waterDropColor: Colors.transparent,
               complete: Container(),
-              idleIcon: LoadingWidgets.loading(width: 30),
+              idleIcon: LoadingWidgets.loading(),
               completeDuration: Duration.zero,
-              refresh: LoadingWidgets.loading(width: 30),
+              refresh: LoadingWidgets.loading(),
             )
           : null,
       onRefresh: onRefresh,

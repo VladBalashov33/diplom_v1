@@ -1,10 +1,8 @@
-import 'package:diplom/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 class LoadingWidgets {
   static Widget loading({
     Color? color,
-    double? width,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -13,7 +11,6 @@ class LoadingWidgets {
       ),
       child: CircularProgressIndicator(
         color: color,
-        // size: width ?? 40.w,
       ),
     );
   }
