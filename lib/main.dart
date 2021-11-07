@@ -1,7 +1,10 @@
 import 'dart:async';
 
 import 'package:bot_toast/bot_toast.dart';
+import 'package:diplom/bloc/choose_user_bloc/choose_user_bloc.dart';
 import 'package:diplom/data_source/local/local_storage.dart';
+import 'package:diplom/screens/choose_user_screen.dart';
+import 'package:diplom/utils/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -24,32 +27,28 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return
-        // MultiBlocProvider(
-        //   providers: [
-        //     BlocProvider<UserBloc>(
-        //       create: (context) => UserBloc(),
-        //     ),
-        //   ],
-        //   child:
-
-        MaterialApp(
-      initialRoute: '/',
-      builder: BotToastInit(),
-      navigatorObservers: [BotToastNavigatorObserver()],
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<ChooseUserBloc>(
+          create: (context) => ChooseUserBloc(),
+        ),
       ],
-      locale: const Locale('ru', 'RU'),
-      supportedLocales: const [
-        Locale('ru', 'RU'),
-      ],
-      theme: ThemeData(
-        scaffoldBackgroundColor: Colors.transparent,
+      child: MaterialApp(
+        initialRoute: '/',
+        builder: BotToastInit(),
+        navigatorObservers: [BotToastNavigatorObserver()],
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        locale: const Locale('ru', 'RU'),
+        supportedLocales: const [
+          Locale('ru', 'RU'),
+        ],
+        theme: myTheme,
+        home: LoadingScreen(),
       ),
-      home: LoadingScreen(),
     );
   }
 }
@@ -57,20 +56,6 @@ class _MyAppState extends State<MyApp> {
 class LoadingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 1,
-      width: 1,
-    );
-    // return BlocBuilder<UserBloc, UserState>(
-    //   builder: (context, state) {
-    //     if (state is UserAuth) {
-    //       return MainScreen();
-    //     }
-    //     if (state is UserEmpty) {
-    //       return const LoginScreen();
-    //     }
-    //     return LoadingWidgets.loadingCenter();
-    //   },
-    // );
+    return const ChooseUserScreen();
   }
 }
