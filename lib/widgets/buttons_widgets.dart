@@ -34,7 +34,7 @@ class DefaultButton extends StatelessWidget {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          color: isActive ? null : Colors.white.withOpacity(0.2),
+          color: isActive ? Colors.black : Colors.white.withOpacity(0.2),
         ),
         child: Text(
           text,

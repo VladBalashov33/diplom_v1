@@ -1,5 +1,9 @@
 import 'package:diplom/bloc/choose_user_bloc/choose_user_bloc.dart';
 import 'package:diplom/models/user.dart';
+import 'package:diplom/widgets/charts/chart_date_count.dart';
+import 'package:diplom/widgets/charts/chart_hour_post.dart';
+import 'package:diplom/widgets/charts/chart_user_count.dart';
+import 'package:diplom/widgets/charts/chart_weekday_post.dart';
 import 'package:diplom/screens/detail_user_screen.dart';
 import 'package:diplom/utils/constants.dart';
 import 'package:diplom/widgets/bloc_provider_builder.dart';
@@ -13,9 +17,7 @@ class ChooseUserScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Выберете пользователя'),
-      ),
+      appBar: AppBar(title: const Text('Выберете пользователя')),
       body: BlocProviderBuilder<ChooseUserBloc, ChooseUserState>(
         create: (context) => ChooseUserBloc(),
         builder: (context, state) {
@@ -36,6 +38,51 @@ class ChooseUserScreen extends StatelessWidget {
                 },
               ),
               if (state is ChooseUserLoading) LoadingWidgets.loadingCenter(),
+              DefaultButton(
+                text: 'ssssss',
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => Scaffold(
+                        appBar: AppBar(),
+                        body: const ChartWeekdayPost(
+                          data: Constants.chartDataWeekdayPost,
+                        ),
+                      ),
+                    ),
+                  );
+                  // Navigator.of(context).push(
+                  //   MaterialPageRoute(
+                  //     builder: (_) => Scaffold(
+                  //       appBar: AppBar(),
+                  //       body: const ChartHourPost(
+                  //         data: Constants.chartDataHourPost,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // );
+                  // Navigator.of(context).push(
+                  //   MaterialPageRoute(
+                  //     builder: (_) => Scaffold(
+                  //       appBar: AppBar(),
+                  //       body: const ChartDateCount(
+                  //         data: Constants.chartDataDateCount,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // );
+                  // Navigator.of(context).push(
+                  //   MaterialPageRoute(
+                  //     builder: (_) => Scaffold(
+                  //       appBar: AppBar(),
+                  //       body: const ChartUserCount(
+                  //         data: Constants.chartUserCount,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // );
+                },
+              ),
             ],
           );
         },
