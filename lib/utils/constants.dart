@@ -1,6 +1,14 @@
 import 'package:diplom/models/chart_item.dart';
 import 'package:flutter/material.dart';
 
+enum SortType {
+  username,
+  name,
+  lastActivity,
+  subscribers,
+  postCount,
+}
+
 class Constants {
   const Constants._();
 
@@ -23,6 +31,13 @@ class Constants {
     left: 12,
     right: 12,
   );
+  static Map<SortType, String> sortTypeName = {
+    SortType.username: 'Имя пользователя',
+    SortType.name: 'Полное имя',
+    SortType.subscribers: 'Подписчики',
+    SortType.lastActivity: 'Последняя активность',
+    SortType.postCount: 'Кол-во постов',
+  };
 
   static const chartDataWeekdayPost = <ChartDataItem>[
     ChartDataItem('2021-11-01 00:00:00.000', 24),

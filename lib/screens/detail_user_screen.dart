@@ -23,17 +23,18 @@ class DetailUserScreen extends StatelessWidget {
         appBar: AppBar(
           title: Text(user.username),
         ),
-        body: BlocProviderBuilder<ChooseUserBloc, ChooseUserState>(
-          create: (context) => ChooseUserBloc(),
-          builder: (context, state) {
-            return Stack(
-              children: [
-                const _Body(),
-                if (state is ChooseUserLoading) LoadingWidgets.loadingCenter(),
-              ],
-            );
-          },
-        ),
+        body: const _Body(),
+        //  BlocProviderBuilder<, >(
+        //   create: (context) => (),
+        //   builder: (context, state) {
+        //     return Stack(
+        //       children: [
+        //         const _Body(),
+        //         if (state is ChooseUserLoading) LoadingWidgets.loadingCenter(),
+        //       ],
+        //     );
+        //   },
+        // ),
       ),
     );
   }

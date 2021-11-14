@@ -7,20 +7,37 @@ import 'package:diplom/widgets/charts/chart_weekday_post.dart';
 import 'package:diplom/screens/detail_user_screen.dart';
 import 'package:diplom/utils/constants.dart';
 import 'package:diplom/widgets/bloc_provider_builder.dart';
+import 'package:diplom/widgets/user_list_item.dart';
 import 'package:diplom/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 class ChooseUserScreen extends StatelessWidget {
   const ChooseUserScreen({Key? key}) : super(key: key);
 
+  static final scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Выберете пользователя')),
-      body: BlocProviderBuilder<ChooseUserBloc, ChooseUserState>(
-        create: (context) => ChooseUserBloc(),
+      key: scaffoldKey,
+      endDrawer: const _Drawer(),
+      appBar: AppBar(
+        title: const Text('Выберете пользователя'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.filter_list),
+            tooltip: 'Open shopping cart',
+            onPressed: () {
+              scaffoldKey.currentState?.openEndDrawer();
+            },
+          ),
+        ],
+      ),
+      body: BlocBuilder<ChooseUserBloc, ChooseUserState>(
         builder: (context, state) {
+          print('==$state==');
           final users = context.watch<ChooseUserBloc>().users;
           return Stack(
             children: [
@@ -28,7 +45,7 @@ class ChooseUserScreen extends StatelessWidget {
                 padding: Constants.listPadding,
                 itemCount: users.length,
                 itemBuilder: (context, index) {
-                  return _ListItem(user: users[index]);
+                  return UserListItem(user: users[index]);
                 },
                 separatorBuilder: (context, index) {
                   return const Divider(
@@ -91,53 +108,66 @@ class ChooseUserScreen extends StatelessWidget {
   }
 }
 
-class _ListItem extends StatelessWidget {
-  const _ListItem({
-    required this.user,
+class _Drawer extends StatefulWidget {
+  const _Drawer({
     Key? key,
   }) : super(key: key);
 
-  final User user;
+  @override
+  State<_Drawer> createState() => _DrawerState();
+}
+
+class _DrawerState extends State<_Drawer> {
+  late SortType _sortType;
+  late bool _isRevers;
+  @override
+  void initState() {
+    _sortType = context.read<ChooseUserBloc>().getSortType;
+    _isRevers = context.read<ChooseUserBloc>().getIsRevers;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => DetailUserScreen(user: user),
-          ),
-        );
-      },
-      behavior: HitTestBehavior.opaque,
-      child: Row(
+    return Drawer(
+      child: Column(
         children: [
-          CachedImage(
-            user.photo,
-            height: 93,
-            width: 113,
+          const SafeArea(bottom: false, child: SizedBox()),
+          const Padding(padding: EdgeInsets.only(top: 20)),
+          ListTile(
+            title: const Text('От большего к меньшему'),
+            leading: SizedBox(
+              width: 45,
+              child: Switch(
+                value: _isRevers,
+                onChanged: (value) {
+                  context.read<ChooseUserBloc>().setIsRevers(value);
+                  setState(() => _isRevers = value);
+                },
+              ),
+            ),
           ),
-          const Padding(padding: EdgeInsets.only(left: 8)),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                user.username,
-                style: Theme.of(context).textTheme.headline6,
-              ),
-              const Padding(padding: EdgeInsets.only(top: 4)),
-              Text(
-                user.name,
-                style: Theme.of(context).textTheme.subtitle1,
-              ),
-              const Padding(padding: EdgeInsets.only(top: 2)),
-              Text(
-                'Подписчики: ${user.subscribers}',
-                style: Theme.of(context).textTheme.bodyText2,
-              ),
-            ],
-          )
+          _radioItem(SortType.username),
+          _radioItem(SortType.name),
+          _radioItem(SortType.subscribers),
+          _radioItem(SortType.lastActivity),
+          _radioItem(SortType.postCount),
         ],
+      ),
+    );
+  }
+
+  ListTile _radioItem(SortType value) {
+    return ListTile(
+      title: Text(Constants.sortTypeName[value] ?? ''),
+      leading: Radio<SortType>(
+        value: value,
+        groupValue: _sortType,
+        onChanged: (value) {
+          final _value = value ?? SortType.name;
+          context.read<ChooseUserBloc>().setSortType(_value);
+          setState(() => _sortType = _value);
+        },
       ),
     );
   }
