@@ -63,7 +63,8 @@ class ChooseUserBloc extends Cubit<ChooseUserState> {
 
   List<User> get users => _isRevers ? _sortUsers.reversed.toList() : _sortUsers;
 
-  // Comparator<User> sortById = (a, b) => a.subscribers.compareTo(b.subscribers);
+  // Comparator<User> sortById = (a, b) =>
+  // a.subscribers.compareTo(b.subscribers);
 
   // List<User> get getSubSort2 {
   //   final sss = <User>[];

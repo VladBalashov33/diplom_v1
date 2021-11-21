@@ -1,8 +1,12 @@
+// ignore_for_file: lines_longer_than_80_chars
+
 import 'dart:math';
 
-import 'package:diplom/models/publish.dart';
+import 'package:diplom/models/post.dart';
 import 'package:diplom/utils/constants.dart';
 import 'package:intl/intl.dart';
+
+import 'post_json.dart';
 
 class User {
   final int id;
@@ -20,9 +24,11 @@ class User {
   final List<String> alsoUrl;
   final bool isBusiness;
   final String typeBusiness;
-  final List<Publish> publish;
+  final List<Post> posts;
+  final UserPosts postInfo;
 
   User({
+    required this.postInfo,
     this.id = 0,
     this.name = '',
     this.username = '',
@@ -37,11 +43,20 @@ class User {
     this.alsoUrl = const [],
     this.isBusiness = false,
     this.typeBusiness = '',
-    this.publish = const [],
+    this.posts = const [],
   });
 
   factory User.mock({int? id}) {
     final random = Random();
+    final _posts = <Post>[];
+    final _postsStat = UserPosts.init;
+
+    for (var i in postJson['res'] as List) {
+      final _post = Post.fromJson(i);
+      _posts.add(_post);
+      _postsStat.addPost(_post);
+    }
+
     return User(
       id: id ?? 0,
       name: 'cat',
@@ -63,7 +78,8 @@ class User {
       ],
       isBusiness: random.nextBool(),
       typeBusiness: 'Волк',
-      publish: [],
+      posts: _posts,
+      postInfo: _postsStat,
     );
   }
 

@@ -48,51 +48,6 @@ class ChooseUserScreen extends StatelessWidget {
                 },
               ),
               if (state is ChooseUserLoading) LoadingWidgets.loadingCenter(),
-              DefaultButton(
-                text: 'ssssss',
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => Scaffold(
-                        appBar: AppBar(),
-                        body: const ChartWeekdayPost(
-                          data: Constants.chartDataWeekdayPost,
-                        ),
-                      ),
-                    ),
-                  );
-                  // Navigator.of(context).push(
-                  //   MaterialPageRoute(
-                  //     builder: (_) => Scaffold(
-                  //       appBar: AppBar(),
-                  //       body: const ChartHourPost(
-                  //         data: Constants.chartDataHourPost,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // );
-                  // Navigator.of(context).push(
-                  //   MaterialPageRoute(
-                  //     builder: (_) => Scaffold(
-                  //       appBar: AppBar(),
-                  //       body: const ChartDateCount(
-                  //         data: Constants.chartDataDateCount,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // );
-                  // Navigator.of(context).push(
-                  //   MaterialPageRoute(
-                  //     builder: (_) => Scaffold(
-                  //       appBar: AppBar(),
-                  //       body: const ChartUserCount(
-                  //         data: Constants.chartUserCount,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // );
-                },
-              ),
             ],
           );
         },

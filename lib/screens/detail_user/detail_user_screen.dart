@@ -1,6 +1,6 @@
 import 'package:diplom/utils/utils.dart';
+import 'package:diplom/widgets/charts/chart_true_false.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 import 'main_info.dart';
@@ -28,7 +28,8 @@ class DetailUserScreen extends StatelessWidget {
         //     return Stack(
         //       children: [
         //         const _Body(),
-        //         if (state is ChooseUserLoading) LoadingWidgets.loadingCenter(),
+        //         if (state is ChooseUserLoading)
+        // LoadingWidgets.loadingCenter(),
         //       ],
         //     );
         //   },
@@ -45,11 +46,19 @@ class _Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = context.watch<User>();
+
     return ListView(
       padding: Constants.listPadding,
-      children: const [
-        UserTitle(),
-        MainInfo(),
+      children: [
+        const UserTitle(),
+        const MainInfo(),
+        CustomExpansionTile(
+          text: 'Количество коммерческих постов',
+          children: <Widget>[
+            ChartTrueFalse(data: user.postInfo.isCommercialData)
+          ],
+        ),
       ],
     );
   }

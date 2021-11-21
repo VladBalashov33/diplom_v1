@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_positional_boolean_parameters
+
 class ChartDataItem {
   const ChartDataItem(this.date, this.item);
 
@@ -18,5 +20,12 @@ class ChartStringItem {
   const ChartStringItem(this.str, this.item);
 
   final String str;
+  final int item;
+}
+
+class ChartBoolItem {
+  const ChartBoolItem(this.isBool, this.item);
+
+  final bool isBool;
   final int item;
 }

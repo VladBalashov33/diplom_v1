@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_overrides
+
 part of 'choose_user_bloc.dart';
 
 @immutable

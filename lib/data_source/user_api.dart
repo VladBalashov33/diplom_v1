@@ -20,6 +20,6 @@ class UserApi with SendWithToastMixin {
     // return response;
     await Future.delayed(Constants.delayDuration);
 
-    return List.generate(10000, (index) => User.mock());
+    return List.generate(20, (index) => User.mock());
   }
 }
