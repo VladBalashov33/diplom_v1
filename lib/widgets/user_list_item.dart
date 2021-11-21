@@ -1,5 +1,5 @@
 import 'package:diplom/models/user.dart';
-import 'package:diplom/screens/detail_user_screen.dart';
+import 'package:diplom/screens/detail_user/detail_user_screen.dart';
 import 'package:diplom/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 

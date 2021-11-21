@@ -1,14 +1,7 @@
 import 'package:diplom/bloc/choose_user_bloc/choose_user_bloc.dart';
-import 'package:diplom/models/user.dart';
-import 'package:diplom/widgets/charts/chart_date_count.dart';
-import 'package:diplom/widgets/charts/chart_hour_post.dart';
-import 'package:diplom/widgets/charts/chart_user_count.dart';
+import 'package:diplom/utils/utils.dart';
 import 'package:diplom/widgets/charts/chart_weekday_post.dart';
-import 'package:diplom/screens/detail_user_screen.dart';
-import 'package:diplom/utils/constants.dart';
-import 'package:diplom/widgets/bloc_provider_builder.dart';
 import 'package:diplom/widgets/user_list_item.dart';
-import 'package:diplom/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
