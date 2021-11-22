@@ -24,7 +24,6 @@ class User {
   final List<String> alsoUrl;
   final bool isBusiness;
   final String typeBusiness;
-  final List<Post> posts;
   final UserPosts postInfo;
 
   User({
@@ -43,17 +42,14 @@ class User {
     this.alsoUrl = const [],
     this.isBusiness = false,
     this.typeBusiness = '',
-    this.posts = const [],
   });
 
   factory User.mock({int? id}) {
     final random = Random();
-    final _posts = <Post>[];
     final _postsStat = UserPosts.init;
 
     for (var i in postJson['res'] as List) {
       final _post = Post.fromJson(i);
-      _posts.add(_post);
       _postsStat.addPost(_post);
     }
 
@@ -78,7 +74,6 @@ class User {
       ],
       isBusiness: random.nextBool(),
       typeBusiness: 'Волк',
-      posts: _posts,
       postInfo: _postsStat,
     );
   }

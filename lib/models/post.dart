@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 import 'chart_item.dart';
 import 'location.dart';
 import 'user.dart';
@@ -58,10 +60,11 @@ class Post {
     );
   }
 
-  DateTime get getTime => DateTime.fromMillisecondsSinceEpoch(takenAt);
+  DateTime get getTime => DateTime.fromMillisecondsSinceEpoch(takenAt * 1000);
 }
 
 class UserPosts {
+  List<Post> post;
   List<DateTime> takenAt;
   List<int> mediaType;
   List<CustomLocation> location;
@@ -78,6 +81,7 @@ class UserPosts {
   Set<User> usersInPhoto;
 
   UserPosts({
+    required this.post,
     required this.takenAt,
     required this.mediaType,
     required this.location,
@@ -95,6 +99,7 @@ class UserPosts {
   });
 
   static UserPosts get init => UserPosts(
+        post: [],
         takenAt: [],
         mediaType: [],
         location: [],
@@ -112,6 +117,7 @@ class UserPosts {
       );
 
   void addPost(Post post) {
+    this.post.add(post);
     takenAt.add(post.getTime);
     mediaType.add(post.mediaType);
     location.add(post.location);
@@ -140,5 +146,38 @@ class UserPosts {
       ChartBoolItem(true, _true),
       ChartBoolItem(false, _false),
     ];
+  }
+
+  static const _countKey = 'count';
+  static const _linkKey = 'link';
+
+  List<ChartDataItem> postPerDay() {
+    final _map = <String, Map<String, dynamic>>{};
+
+    for (var i = 0; i < takenAt.length; i++) {
+      final date = DateFormat.yMd().format(takenAt[i]);
+      _map.containsKey(date)
+          ? _map.update(
+              date,
+              (value) {
+                final _link = value[_linkKey];
+                _link.add(link[i]);
+                return {_countKey: value[_countKey] + 1, _linkKey: _link};
+              },
+            )
+          : _map.addAll(
+              {
+                date: {
+                  _countKey: 1,
+                  _linkKey: [link[i]]
+                }
+              },
+            );
+    }
+    final _list = <ChartDataItem>[];
+    _map.forEach((key, value) {
+      _list.add(ChartDataItem(key, value[_countKey], links: value[_linkKey]));
+    });
+    return _list;
   }
 }

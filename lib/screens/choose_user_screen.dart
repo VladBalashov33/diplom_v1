@@ -4,6 +4,7 @@ import 'package:diplom/widgets/charts/chart_weekday_post.dart';
 import 'package:diplom/widgets/user_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:provider/provider.dart';
 
 class ChooseUserScreen extends StatelessWidget {

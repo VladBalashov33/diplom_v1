@@ -1,10 +1,12 @@
 import 'package:diplom/models/chart_item.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-class ChartDateCount extends StatelessWidget {
-  const ChartDateCount({required this.data}) : super();
+class ChartDayPost extends StatelessWidget {
+  const ChartDayPost({required this.data}) : super();
 
   final List<ChartDataItem> data;
 
@@ -17,7 +19,7 @@ class ChartDateCount extends StatelessWidget {
         primaryXAxis: DateTimeCategoryAxis(
           majorGridLines: const MajorGridLines(width: 0),
           labelIntersectAction: AxisLabelIntersectAction.rotate45,
-          // dateFormat: DateFormat.E(),
+          dateFormat: DateFormat.yMd(),
         ),
         tooltipBehavior: TooltipBehavior(enable: true),
         title: ChartTitle(
@@ -29,34 +31,17 @@ class ChartDateCount extends StatelessWidget {
           majorTickLines: const MajorTickLines(size: 0),
           axisLine: const AxisLine(width: 0),
         ),
-        series: <CartesianSeries<ChartDataItem, DateTime>>[
-          LineSeries<ChartDataItem, DateTime>(
+        series: <ColumnSeries<ChartDataItem, DateTime>>[
+          ColumnSeries<ChartDataItem, DateTime>(
             dataSource: data,
             name: 'постов в день',
-            // onCreateShader: (ShaderDetails details) {
-            //   return ui.Gradient.linear(
-            //       details.rect.topCenter, details.rect.bottomCenter, <Color>[
-            //     const Color.fromRGBO(26, 112, 23, 1),
-            //     const Color.fromRGBO(26, 112, 23, 1),
-            //     const Color.fromRGBO(4, 8, 195, 1),
-            //     const Color.fromRGBO(4, 8, 195, 1),
-            //     const Color.fromRGBO(229, 11, 10, 1),
-            //     const Color.fromRGBO(229, 11, 10, 1),
-            //   ], <double>[
-            //     0,
-            //     0.333333,
-            //     0.333333,
-            //     0.666666,
-            //     0.666666,
-            //     0.999999,
-            //   ]);
-            // },
             xValueMapper: (x, xx) => x.getDate,
             yValueMapper: (sales, _) => sales.item,
             onPointTap: (data) {
-              print('==$data==');
+              Provider.of<GlobalKey<ScaffoldState>>(context, listen: false)
+                  .currentState!
+                  .openEndDrawer();
             },
-            // markerSettings: const MarkerSettings(isVisible: true),
           ),
         ],
       ),
