@@ -1,8 +1,12 @@
+import 'package:diplom/bloc/detail_user_bloc/detail_user_bloc.dart';
 import 'package:diplom/utils/utils.dart';
 import 'package:diplom/widgets/charts/chart_day_post.dart';
 import 'package:diplom/widgets/charts/chart_true_false.dart';
+import 'package:diplom/widgets/html_container.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'main_info.dart';
 import 'user_title.dart';
@@ -22,25 +26,31 @@ class DetailUserScreen extends StatelessWidget {
       value: user,
       child: Provider<GlobalKey<ScaffoldState>>.value(
         value: scaffoldKey,
-        child: Scaffold(
-          key: scaffoldKey,
-          endDrawer: const _Drawer(),
-          appBar: AppBar(
-            title: Text(user.username),
-          ),
-          body: const _Body(),
-          //  BlocProviderBuilder<, >(
-          //   create: (context) => (),
-          //   builder: (context, state) {
-          //     return Stack(
-          //       children: [
-          //         const _Body(),
-          //         if (state is ChooseUserLoading)
-          // LoadingWidgets.loadingCenter(),
-          //       ],
-          //     );
-          //   },
-          // ),
+        child: BlocProviderBuilder<DetailUserBloc, DetailUserState>(
+          create: (context) => DetailUserBloc(),
+          builder: (context, state) {
+            return Scaffold(
+              key: scaffoldKey,
+              drawerScrimColor: Colors.transparent,
+              endDrawer: const _Drawer(),
+              appBar: AppBar(
+                title: Text(user.username),
+              ),
+              body: const _Body(),
+              //  BlocProviderBuilder<, >(
+              //   create: (context) => (),
+              //   builder: (context, state) {
+              //     return Stack(
+              //       children: [
+              //         const _Body(),
+              //         if (state is ChooseUserLoading)
+              // LoadingWidgets.loadingCenter(),
+              //       ],
+              //     );
+              //   },
+              // ),
+            );
+          },
         ),
       ),
     );
@@ -62,15 +72,17 @@ class _Body extends StatelessWidget {
         const UserTitle(),
         const MainInfo(),
         CustomExpansionTile(
+          text: 'Постов в день',
+          children: <Widget>[ChartDayPost(data: user.postInfo.postPerDay())],
+        ),
+        CustomExpansionTile(
           text: 'Количество коммерческих постов',
           children: <Widget>[
             ChartTrueFalse(data: user.postInfo.isCommercialData)
           ],
         ),
-        CustomExpansionTile(
-          text: 'Количество коммерческих постов',
-          children: <Widget>[ChartDayPost(data: user.postInfo.postPerDay())],
-        ),
+        const Padding(padding: EdgeInsets.only(top: 200)),
+        const SafeArea(top: false, child: SizedBox()),
       ],
     );
   }
@@ -83,14 +95,49 @@ class _Drawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final items = context.watch<DetailUserBloc>().postLinks;
     return Drawer(
-      child: Column(
-        children: [
-          Text('text'),
-          Text('text'),
-          Text('text'),
-        ],
+      child: ListView.separated(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 60),
+        itemBuilder: (context, index) => CustomHtml(items[index]),
+        separatorBuilder: (context, index) => const Padding(
+          padding: EdgeInsets.only(top: 8),
+        ),
+        itemCount: items.length,
       ),
     );
   }
 }
+// class _Drawer extends StatelessWidget {
+//   const _Drawer({
+//     Key? key,
+//   }) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Drawer(
+//       child: Column(
+//         children: [
+//           const SafeArea(bottom: false, child: SizedBox()),
+//           ...context
+//               .watch<DetailUserBloc>()
+//               .postLinks
+//               .map(
+//                 (e) => Linkify(onOpen: _onOpen, text: e),
+//               )
+//               .toList(),
+//           const SafeArea(top: false, child: SizedBox()),
+//         ],
+//       ),
+//     );
+//   }
+
+//   Future<void> _onOpen(LinkableElement link) async {
+//     if (await canLaunch(link.url)) {
+//       await launch(link.url);
+//     } else {
+//       throw 'Could not launch $link';
+//     }
+//   }
+// }
+
