@@ -13,6 +13,18 @@ extension Convert on DateTime {
   }
 }
 
+extension DoubleConvert on double {
+  double to100() {
+    return (this ~/ 100 + 1) * 100;
+  }
+}
+
+extension RangeValuesConvert on RangeValues {
+  RangeValues to100() {
+    return RangeValues(start.to100(), end.to100());
+  }
+}
+
 extension StringExt on String {
   String toPhone() {
     if (length != 11) {

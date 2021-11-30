@@ -79,29 +79,41 @@ class _DrawerState extends State<_Drawer> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: Column(
-        children: [
-          const SafeArea(bottom: false, child: SizedBox()),
-          const Padding(padding: EdgeInsets.only(top: 20)),
-          ListTile(
-            title: const Text('От большего к меньшему'),
-            leading: SizedBox(
-              width: 45,
-              child: Switch(
-                value: _isRevers,
-                onChanged: (value) {
-                  context.read<ChooseUserBloc>().setIsRevers(value);
-                  setState(() => _isRevers = value);
-                },
-              ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: Column(
+          children: [
+            const SafeArea(bottom: false, child: SizedBox()),
+            const Padding(padding: EdgeInsets.only(top: 20)),
+            CustomExpansionTile(
+              text: 'Сортировка',
+              isExpand: true,
+              children: [
+                ListTile(
+                  title: const Text('От большего к меньшему'),
+                  leading: SizedBox(
+                    width: 45,
+                    child: Switch(
+                      value: _isRevers,
+                      onChanged: (value) {
+                        context.read<ChooseUserBloc>().setIsRevers(value);
+                        setState(() => _isRevers = value);
+                      },
+                    ),
+                  ),
+                ),
+                _radioItem(SortType.username),
+                _radioItem(SortType.name),
+                _radioItem(SortType.subscribers),
+                _radioItem(SortType.lastActivity),
+                _radioItem(SortType.postCount),
+              ],
             ),
-          ),
-          _radioItem(SortType.username),
-          _radioItem(SortType.name),
-          _radioItem(SortType.subscribers),
-          _radioItem(SortType.lastActivity),
-          _radioItem(SortType.postCount),
-        ],
+            const CustomExpansionTile(text: 'Фильтр', children: [
+              _RangeSlider(),
+            ]),
+          ],
+        ),
       ),
     );
   }
@@ -118,6 +130,60 @@ class _DrawerState extends State<_Drawer> {
           setState(() => _sortType = _value);
         },
       ),
+    );
+  }
+}
+
+class _RangeSlider extends StatefulWidget {
+  const _RangeSlider({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<_RangeSlider> createState() => _RangeSliderState();
+}
+
+class _RangeSliderState extends State<_RangeSlider> {
+  late RangeValues rangeValues;
+  @override
+  void initState() {
+    super.initState();
+    rangeValues = context.read<ChooseUserBloc>().getSubsRange;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final max = context.read<ChooseUserBloc>().subsRangeInit.end.to100();
+    return Column(
+      children: [
+        Row(
+          children: [
+            const Padding(padding: EdgeInsets.only(left: 4)),
+            Text('${rangeValues.start.toInt()}'),
+            const Spacer(),
+            Text('${rangeValues.end.toInt()}'),
+            const Padding(padding: EdgeInsets.only(left: 4)),
+          ],
+        ),
+        const Padding(padding: EdgeInsets.only(top: 8)),
+        RangeSlider(
+          values: rangeValues,
+          onChanged: (value) {
+            value = value.to100();
+            if (max < value.end) {
+              value = RangeValues(value.start, max);
+            }
+            if (value.start > value.end) {
+              value = RangeValues(value.end - 100, value.end);
+            }
+            context.read<ChooseUserBloc>().setSubsRange(value);
+            setState(() => rangeValues = value);
+          },
+          min: 0,
+          max: max,
+          divisions: 1000,
+        ),
+      ],
     );
   }
 }

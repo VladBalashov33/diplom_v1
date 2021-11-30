@@ -35,6 +35,13 @@ class DetailUserScreen extends StatelessWidget {
               endDrawer: const _Drawer(),
               appBar: AppBar(
                 title: Text(user.username),
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                actions: <Widget>[Container()],
               ),
               body: const _Body(),
               //  BlocProviderBuilder<, >(

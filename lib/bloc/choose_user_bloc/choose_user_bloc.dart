@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:diplom/data_source/user_repo.dart';
 import 'package:diplom/models/user.dart';
-import 'package:diplom/utils/constants.dart';
+import 'package:diplom/utils/utils.dart';
+import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
 part 'choose_user_state.dart';
@@ -19,6 +22,17 @@ class ChooseUserBloc extends Cubit<ChooseUserState> {
 
   List<User> _users = const [];
 
+  List<User> get users => _isRevers ? _sortUsers.reversed.toList() : _sortUsers;
+
+  List<User> get unSortUsers {
+    final newUser = <User>[];
+    newUser.addAll(_users);
+    newUser.removeWhere(
+      (e) => _subsRange.start > e.subscribers || e.subscribers > _subsRange.end,
+    );
+    return newUser;
+  }
+
   bool _isRevers = false;
   bool get getIsRevers => _isRevers;
   void Function(String)? setIsRevers(value) {
@@ -33,10 +47,37 @@ class ChooseUserBloc extends Cubit<ChooseUserState> {
     addInitialEvent();
   }
 
+  Timer? _timer;
+
+  late RangeValues subsRangeInit;
+  RangeValues _subsRange = const RangeValues(0, 0);
+  RangeValues get getSubsRange => _subsRange;
+  void Function(String)? setSubsRange(RangeValues value) {
+    _timer?.cancel();
+    _timer = Timer(
+      const Duration(seconds: 1),
+      () {
+        _subsRange = value;
+        addInitialEvent();
+      },
+    );
+  }
+
+  RangeValues getInitSubsRange(List<User> newUsers) {
+    // ignore: avoid_types_on_closure_parameters
+    newUsers = sortedWithKey(_users, (User a) => a.subscribers);
+    if (newUsers.isNotEmpty) {
+      return RangeValues(0, newUsers.last.subscribers.toDouble().to100());
+    }
+    return const RangeValues(0, 1000000);
+  }
+
   Future<void> getUsers() async {
     addLoadingEvent();
     return _repository.getUsers().then((value) {
       _users = value;
+      subsRangeInit = getInitSubsRange(_users);
+      _subsRange = subsRangeInit;
       addSuccessEvent();
     }, onError: (e) {
       print('=getUsers=$e==');
@@ -57,40 +98,29 @@ class ChooseUserBloc extends Cubit<ChooseUserState> {
       case SortType.postCount:
         return getPostCountSort;
       default:
-        return _users;
+        return unSortUsers;
     }
   }
 
-  List<User> get users => _isRevers ? _sortUsers.reversed.toList() : _sortUsers;
-
-  // Comparator<User> sortById = (a, b) =>
-  // a.subscribers.compareTo(b.subscribers);
-
-  // List<User> get getSubSort2 {
-  //   final sss = <User>[];
-  //   sss.addAll(users);
-  //   sss.sort(sortById);
-  //   return sss;
-  // }
-
   List<User> get getUsernameSort {
-    return sortedWithKey(_users, (k) => k.username);
+    return sortedWithKey(unSortUsers, (k) => k.username);
   }
 
   List<User> get getNameSort {
-    return sortedWithKey(_users, (k) => k.name);
+    return sortedWithKey(unSortUsers, (k) => k.name);
   }
 
   List<User> get getLastActivitySort {
-    return sortedWithKey(_users, (k) => k.lastActivity ?? DateTime(1990, 1, 1));
+    return sortedWithKey(
+        unSortUsers, (k) => k.lastActivity ?? DateTime(1990, 1, 1));
   }
 
   List<User> get getSubscribersSort {
-    return sortedWithKey(_users, (a) => a.subscribers);
+    return sortedWithKey(unSortUsers, (a) => a.subscribers);
   }
 
   List<User> get getPostCountSort {
-    return sortedWithKey(_users, (a) => a.countPublished);
+    return sortedWithKey(unSortUsers, (a) => a.countPublished);
   }
 
   List<E> sortedWithKey<E, K extends Comparable<Object>>(
