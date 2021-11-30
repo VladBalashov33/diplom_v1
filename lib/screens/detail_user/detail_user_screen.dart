@@ -76,6 +76,12 @@ class _Body extends StatelessWidget {
           children: <Widget>[ChartDayPost(data: user.postInfo.postPerDay())],
         ),
         CustomExpansionTile(
+          text: 'Постов в течении дня',
+          children: <Widget>[
+            ChartAmongDayPost(data: user.postInfo.postAmongDay())
+          ],
+        ),
+        CustomExpansionTile(
           text: 'Количество коммерческих постов',
           children: <Widget>[
             ChartTrueFalse(data: user.postInfo.isCommercialData)

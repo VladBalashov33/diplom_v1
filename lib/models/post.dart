@@ -180,4 +180,50 @@ class UserPosts {
     });
     return _list;
   }
+
+  List<ChartDataItem> postAmongDay() {
+    final _map = <String, Map<String, dynamic>>{
+      '00': {_countKey: 0, _linkKey: <String>[]},
+      '01': {_countKey: 0, _linkKey: <String>[]},
+      '02': {_countKey: 0, _linkKey: <String>[]},
+      '03': {_countKey: 0, _linkKey: <String>[]},
+      '04': {_countKey: 0, _linkKey: <String>[]},
+      '05': {_countKey: 0, _linkKey: <String>[]},
+      '06': {_countKey: 0, _linkKey: <String>[]},
+      '07': {_countKey: 0, _linkKey: <String>[]},
+      '08': {_countKey: 0, _linkKey: <String>[]},
+      '09': {_countKey: 0, _linkKey: <String>[]},
+      '10': {_countKey: 0, _linkKey: <String>[]},
+      '11': {_countKey: 0, _linkKey: <String>[]},
+      '12': {_countKey: 0, _linkKey: <String>[]},
+      '13': {_countKey: 0, _linkKey: <String>[]},
+      '14': {_countKey: 0, _linkKey: <String>[]},
+      '15': {_countKey: 0, _linkKey: <String>[]},
+      '16': {_countKey: 0, _linkKey: <String>[]},
+      '17': {_countKey: 0, _linkKey: <String>[]},
+      '18': {_countKey: 0, _linkKey: <String>[]},
+      '19': {_countKey: 0, _linkKey: <String>[]},
+      '20': {_countKey: 0, _linkKey: <String>[]},
+      '21': {_countKey: 0, _linkKey: <String>[]},
+      '22': {_countKey: 0, _linkKey: <String>[]},
+      '23': {_countKey: 0, _linkKey: <String>[]},
+    };
+
+    for (var i = 0; i < takenAt.length; i++) {
+      final date = DateFormat.H().format(takenAt[i]);
+      _map.update(
+        date,
+        (value) {
+          final _link = value[_linkKey];
+          _link.add(link[i]);
+          return {_countKey: value[_countKey] + 1, _linkKey: _link};
+        },
+      );
+    }
+    final _list = <ChartDataItem>[];
+    _map.forEach((key, value) {
+      _list.add(ChartDataItem(key, value[_countKey], links: value[_linkKey]));
+    });
+    return _list;
+  }
 }
