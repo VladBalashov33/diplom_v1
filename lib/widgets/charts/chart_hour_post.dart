@@ -33,7 +33,7 @@ class ChartHourPost extends StatelessWidget {
           ColumnSeries<ChartDataItem, DateTime>(
             dataSource: data,
             name: 'постов в день',
-            xValueMapper: (x, xx) => x.getDate,
+            xValueMapper: (x, xx) => x.getDay,
             yValueMapper: (sales, _) => sales.item,
           ),
         ],

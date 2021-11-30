@@ -1,9 +1,9 @@
 import 'package:diplom/bloc/detail_user_bloc/detail_user_bloc.dart';
 import 'package:diplom/models/chart_item.dart';
+import 'package:diplom/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class ChartDayPost extends StatelessWidget {
@@ -34,7 +34,7 @@ class ChartDayPost extends StatelessWidget {
         series: <ColumnSeries<ChartDataItem, DateTime>>[
           ColumnSeries<ChartDataItem, DateTime>(
             dataSource: data,
-            xValueMapper: (x, xx) => x.getDate,
+            xValueMapper: (x, xx) => x.getDay,
             yValueMapper: (sales, _) => sales.item,
             onPointTap: (point) {
               context
@@ -66,13 +66,8 @@ class ChartAmongDayPost extends StatelessWidget {
       child: SfCartesianChart(
         plotAreaBorderWidth: 0,
         primaryXAxis: CategoryAxis(
-            // visibleMinimum: 20,
-            ),
-        // primaryXAxis: DateTimeCategoryAxis(
-        //   majorGridLines: const MajorGridLines(width: 0),
-        //   labelIntersectAction: AxisLabelIntersectAction.rotate45,
-        //   dateFormat: DateFormat.yMd(),
-        // ),
+          interval: 2,
+        ),
         tooltipBehavior: TooltipBehavior(enable: true),
         primaryYAxis: NumericAxis(
           labelFormat: '{value}',
@@ -83,7 +78,7 @@ class ChartAmongDayPost extends StatelessWidget {
         series: <ColumnSeries<ChartDataItem, int>>[
           ColumnSeries<ChartDataItem, int>(
             dataSource: data,
-            xValueMapper: (x, xx) => int.parse(x.date),
+            xValueMapper: (x, xx) => x.getHour.hour,
             yValueMapper: (sales, _) => sales.item,
             onPointTap: (point) {
               context

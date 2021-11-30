@@ -1,3 +1,4 @@
+import 'package:diplom/utils/utils.dart';
 import 'package:intl/intl.dart';
 
 import 'chart_item.dart';
@@ -152,10 +153,10 @@ class UserPosts {
   static const _linkKey = 'link';
 
   List<ChartDataItem> postPerDay() {
-    final _map = <String, Map<String, dynamic>>{};
+    final _map = <DateTime, Map<String, dynamic>>{};
 
     for (var i = 0; i < takenAt.length; i++) {
-      final date = DateFormat.yMd().format(takenAt[i]);
+      final date = takenAt[i].toDay();
       _map.containsKey(date)
           ? _map.update(
               date,
@@ -182,35 +183,35 @@ class UserPosts {
   }
 
   List<ChartDataItem> postAmongDay() {
-    final _map = <String, Map<String, dynamic>>{
-      '00': {_countKey: 0, _linkKey: <String>[]},
-      '01': {_countKey: 0, _linkKey: <String>[]},
-      '02': {_countKey: 0, _linkKey: <String>[]},
-      '03': {_countKey: 0, _linkKey: <String>[]},
-      '04': {_countKey: 0, _linkKey: <String>[]},
-      '05': {_countKey: 0, _linkKey: <String>[]},
-      '06': {_countKey: 0, _linkKey: <String>[]},
-      '07': {_countKey: 0, _linkKey: <String>[]},
-      '08': {_countKey: 0, _linkKey: <String>[]},
-      '09': {_countKey: 0, _linkKey: <String>[]},
-      '10': {_countKey: 0, _linkKey: <String>[]},
-      '11': {_countKey: 0, _linkKey: <String>[]},
-      '12': {_countKey: 0, _linkKey: <String>[]},
-      '13': {_countKey: 0, _linkKey: <String>[]},
-      '14': {_countKey: 0, _linkKey: <String>[]},
-      '15': {_countKey: 0, _linkKey: <String>[]},
-      '16': {_countKey: 0, _linkKey: <String>[]},
-      '17': {_countKey: 0, _linkKey: <String>[]},
-      '18': {_countKey: 0, _linkKey: <String>[]},
-      '19': {_countKey: 0, _linkKey: <String>[]},
-      '20': {_countKey: 0, _linkKey: <String>[]},
-      '21': {_countKey: 0, _linkKey: <String>[]},
-      '22': {_countKey: 0, _linkKey: <String>[]},
-      '23': {_countKey: 0, _linkKey: <String>[]},
+    final _map = <DateTime, Map<String, dynamic>>{
+      DateTime(1900, 1, 1, 0, 0): {_countKey: 0, _linkKey: <String>[]},
+      DateTime(1900, 1, 1, 1, 0): {_countKey: 0, _linkKey: <String>[]},
+      DateTime(1900, 1, 1, 2, 0): {_countKey: 0, _linkKey: <String>[]},
+      DateTime(1900, 1, 1, 3, 0): {_countKey: 0, _linkKey: <String>[]},
+      DateTime(1900, 1, 1, 4, 0): {_countKey: 0, _linkKey: <String>[]},
+      DateTime(1900, 1, 1, 5, 0): {_countKey: 0, _linkKey: <String>[]},
+      DateTime(1900, 1, 1, 6, 0): {_countKey: 0, _linkKey: <String>[]},
+      DateTime(1900, 1, 1, 7, 0): {_countKey: 0, _linkKey: <String>[]},
+      DateTime(1900, 1, 1, 8, 0): {_countKey: 0, _linkKey: <String>[]},
+      DateTime(1900, 1, 1, 9, 0): {_countKey: 0, _linkKey: <String>[]},
+      DateTime(1900, 1, 1, 10, 0): {_countKey: 0, _linkKey: <String>[]},
+      DateTime(1900, 1, 1, 11, 0): {_countKey: 0, _linkKey: <String>[]},
+      DateTime(1900, 1, 1, 12, 0): {_countKey: 0, _linkKey: <String>[]},
+      DateTime(1900, 1, 1, 13, 0): {_countKey: 0, _linkKey: <String>[]},
+      DateTime(1900, 1, 1, 14, 0): {_countKey: 0, _linkKey: <String>[]},
+      DateTime(1900, 1, 1, 15, 0): {_countKey: 0, _linkKey: <String>[]},
+      DateTime(1900, 1, 1, 16, 0): {_countKey: 0, _linkKey: <String>[]},
+      DateTime(1900, 1, 1, 17, 0): {_countKey: 0, _linkKey: <String>[]},
+      DateTime(1900, 1, 1, 18, 0): {_countKey: 0, _linkKey: <String>[]},
+      DateTime(1900, 1, 1, 19, 0): {_countKey: 0, _linkKey: <String>[]},
+      DateTime(1900, 1, 1, 20, 0): {_countKey: 0, _linkKey: <String>[]},
+      DateTime(1900, 1, 1, 21, 0): {_countKey: 0, _linkKey: <String>[]},
+      DateTime(1900, 1, 1, 22, 0): {_countKey: 0, _linkKey: <String>[]},
+      DateTime(1900, 1, 1, 23, 0): {_countKey: 0, _linkKey: <String>[]},
     };
 
     for (var i = 0; i < takenAt.length; i++) {
-      final date = DateFormat.H().format(takenAt[i]);
+      final date = takenAt[i].toHour();
       _map.update(
         date,
         (value) {

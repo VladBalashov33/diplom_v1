@@ -4,8 +4,12 @@ import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 extension Convert on DateTime {
-  String toFieldString() {
-    return DateFormat('dd MMMM yyyy', 'ru').format(this);
+  DateTime toDay() {
+    return DateTime(year, month, day);
+  }
+
+  DateTime toHour() {
+    return DateTime(1900, 1, 1, hour, 0);
   }
 }
 

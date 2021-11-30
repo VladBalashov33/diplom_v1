@@ -51,7 +51,7 @@ class ChartDateCount extends StatelessWidget {
             //     0.999999,
             //   ]);
             // },
-            xValueMapper: (x, xx) => x.getDate,
+            xValueMapper: (x, xx) => x.getDay,
             yValueMapper: (sales, _) => sales.item,
             onPointTap: (data) {
               print('==$data==');
