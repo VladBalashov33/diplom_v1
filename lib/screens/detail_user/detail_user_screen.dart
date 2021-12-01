@@ -1,6 +1,7 @@
 import 'package:diplom/bloc/detail_user_bloc/detail_user_bloc.dart';
 import 'package:diplom/utils/utils.dart';
 import 'package:diplom/widgets/charts/chart_day_post.dart';
+import 'package:diplom/widgets/charts/chart_like_count.dart';
 import 'package:diplom/widgets/charts/chart_true_false.dart';
 import 'package:diplom/widgets/html_container.dart';
 import 'package:flutter/material.dart';
@@ -92,6 +93,24 @@ class _Body extends StatelessWidget {
           text: 'Количество коммерческих постов',
           children: <Widget>[
             ChartTrueFalse(data: user.postInfo.isCommercialData)
+          ],
+        ),
+        CustomExpansionTile(
+          text: 'Количество лайков в постах',
+          children: <Widget>[
+            ChartLikeCount(
+              data: user.postInfo.likeCountByPostData,
+              title: 'лайки',
+            )
+          ],
+        ),
+        CustomExpansionTile(
+          text: 'Количество комментариев в постах',
+          children: <Widget>[
+            ChartLikeCount(
+              data: user.postInfo.commentCountByPostData,
+              title: 'комментарии',
+            )
           ],
         ),
         const Padding(padding: EdgeInsets.only(top: 200)),

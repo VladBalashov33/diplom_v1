@@ -135,17 +135,36 @@ class UserPosts {
     usersInPhoto.addAll(post.usersInPhoto);
   }
 
+  List<ChartDataItem> get likeCountByPostData => _countData(likeCount);
+  List<ChartDataItem> get commentCountByPostData => _countData(commentCount);
+
+  List<ChartDataItem> _countData(List<int> list) {
+    final res = <ChartDataItem>[];
+    for (var i = 0; i < list.length; i++) {
+      res.add(ChartDataItem(takenAt[i], list[i], links: [link[i]]));
+    }
+    return res;
+  }
+
   List<ChartBoolItem> get isCommercialData => _truFalseData(isCommercial);
 
   List<ChartBoolItem> _truFalseData(List<bool> list) {
     var _true = 0;
     var _false = 0;
-    for (var element in list) {
-      element ? _true++ : _false++;
+    final _falseLinks = <String>[];
+    final _trueLinks = <String>[];
+    for (var i = 0; i < list.length; i++) {
+      if (list[i]) {
+        _true++;
+        _trueLinks.add(link[i]);
+      } else {
+        _false++;
+        _falseLinks.add(link[i]);
+      }
     }
     return [
-      ChartBoolItem(true, _true),
-      ChartBoolItem(false, _false),
+      ChartBoolItem(true, _true, _trueLinks),
+      ChartBoolItem(false, _false, _falseLinks),
     ];
   }
 

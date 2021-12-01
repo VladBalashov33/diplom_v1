@@ -4,7 +4,7 @@ import 'package:diplom/models/post.dart';
 import 'package:diplom/utils/utils.dart';
 
 class ChartDataItem {
-  const ChartDataItem(this.date, this.item, {this.links = const []});
+  const ChartDataItem(this.date, this.item, {required this.links});
 
   final DateTime date;
   final int item;
@@ -15,15 +15,17 @@ class ChartDataItem {
 }
 
 class ChartStringItem {
-  const ChartStringItem(this.str, this.item);
+  const ChartStringItem(this.str, this.item, this.links);
 
   final String str;
   final int item;
+  final List<String> links;
 }
 
 class ChartBoolItem {
-  const ChartBoolItem(this.isBool, this.item);
+  const ChartBoolItem(this.isBool, this.item, this.links);
 
   final bool isBool;
   final int item;
+  final List<String> links;
 }
