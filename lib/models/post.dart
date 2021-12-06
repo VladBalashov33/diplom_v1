@@ -1,4 +1,5 @@
 import 'package:diplom/utils/utils.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'chart_item.dart';
@@ -65,88 +66,61 @@ class Post {
 }
 
 class UserPosts {
-  List<Post> post;
-  List<DateTime> takenAt;
-  List<int> mediaType;
-  List<CustomLocation> location;
-  List<bool> shouldRequestAds;
-  List<bool> likeAndViewCountsDisabled;
-  List<bool> isCommercial;
-  List<bool> isPaidPartnership;
-  List<int> commentCount;
-  List<int> likeCount;
-  List<String> link;
-  List<String> createdTime;
-  List<String> type;
+  List<Post> posts;
   Set<String> tags;
   Set<User> usersInPhoto;
 
   UserPosts({
-    required this.post,
-    required this.takenAt,
-    required this.mediaType,
-    required this.location,
-    required this.shouldRequestAds,
-    required this.likeAndViewCountsDisabled,
-    required this.isCommercial,
-    required this.isPaidPartnership,
-    required this.commentCount,
-    required this.likeCount,
-    required this.link,
-    required this.createdTime,
-    required this.type,
+    required this.posts,
     required this.tags,
     required this.usersInPhoto,
   });
 
   static UserPosts get init => UserPosts(
-        post: [],
-        takenAt: [],
-        mediaType: [],
-        location: [],
-        shouldRequestAds: [],
-        likeAndViewCountsDisabled: [],
-        isCommercial: [],
-        isPaidPartnership: [],
-        commentCount: [],
-        likeCount: [],
-        link: [],
-        createdTime: [],
-        type: [],
+        posts: [],
         tags: {},
         usersInPhoto: {},
       );
 
   void addPost(Post post) {
-    this.post.add(post);
-    takenAt.add(post.getTime);
-    mediaType.add(post.mediaType);
-    location.add(post.location);
-    shouldRequestAds.add(post.shouldRequestAds);
-    likeAndViewCountsDisabled.add(post.likeAndViewCountsDisabled);
-    isCommercial.add(post.isCommercial);
-    isPaidPartnership.add(post.isPaidPartnership);
-    commentCount.add(post.commentCount);
-    likeCount.add(post.likeCount);
-    link.add(post.link);
-    createdTime.add(post.createdTime);
-    type.add(post.type);
+    posts.add(post);
     tags.addAll(post.tags);
     usersInPhoto.addAll(post.usersInPhoto);
   }
 
-  List<ChartDataItem> get likeCountByPostData => _countData(likeCount);
-  List<ChartDataItem> get commentCountByPostData => _countData(commentCount);
+  UserPosts getPostInRange(DateTimeRange range) {
+    final _start = range.start;
+    final _end = range.end;
+    final _posts = <Post>[];
+    _posts.addAll(posts);
+    _posts.removeWhere(
+      (e) => e.getTime.isAfter(_start) || e.getTime.isBefore(_end),
+    );
+    return UserPosts(
+      posts: _posts,
+      tags: tags,
+      usersInPhoto: usersInPhoto,
+    );
+  }
+
+  List<ChartDataItem> get likeCountByPostData => _countData(
+        posts.map((e) => e.likeCount).toList(),
+      );
+  List<ChartDataItem> get commentCountByPostData => _countData(
+        posts.map((e) => e.commentCount).toList(),
+      );
 
   List<ChartDataItem> _countData(List<int> list) {
     final res = <ChartDataItem>[];
     for (var i = 0; i < list.length; i++) {
-      res.add(ChartDataItem(takenAt[i], list[i], links: [link[i]]));
+      res.add(ChartDataItem(posts[i].getTime, list[i], links: [posts[i].link]));
     }
     return res;
   }
 
-  List<ChartBoolItem> get isCommercialData => _truFalseData(isCommercial);
+  List<ChartBoolItem> get isCommercialData => _truFalseData(
+        posts.map((e) => e.isCommercial).toList(),
+      );
 
   List<ChartBoolItem> _truFalseData(List<bool> list) {
     var _true = 0;
@@ -156,10 +130,10 @@ class UserPosts {
     for (var i = 0; i < list.length; i++) {
       if (list[i]) {
         _true++;
-        _trueLinks.add(link[i]);
+        _trueLinks.add(posts[i].link);
       } else {
         _false++;
-        _falseLinks.add(link[i]);
+        _falseLinks.add(posts[i].link);
       }
     }
     return [
@@ -174,14 +148,14 @@ class UserPosts {
   List<ChartDataItem> postPerDay() {
     final _map = <DateTime, Map<String, dynamic>>{};
 
-    for (var i = 0; i < takenAt.length; i++) {
-      final date = takenAt[i].toDay();
+    for (var i = 0; i < posts.length; i++) {
+      final date = posts[i].getTime.toDay();
       _map.containsKey(date)
           ? _map.update(
               date,
               (value) {
                 final _link = value[_linkKey];
-                _link.add(link[i]);
+                _link.add(posts[i].link);
                 return {_countKey: value[_countKey] + 1, _linkKey: _link};
               },
             )
@@ -189,7 +163,7 @@ class UserPosts {
               {
                 date: {
                   _countKey: 1,
-                  _linkKey: [link[i]]
+                  _linkKey: [posts[i].link]
                 }
               },
             );
@@ -229,13 +203,13 @@ class UserPosts {
       DateTime(1900, 1, 1, 23, 0): {_countKey: 0, _linkKey: <String>[]},
     };
 
-    for (var i = 0; i < takenAt.length; i++) {
-      final date = takenAt[i].toHour();
+    for (var i = 0; i < posts.length; i++) {
+      final date = posts[i].getTime.toHour();
       _map.update(
         date,
         (value) {
           final _link = value[_linkKey];
-          _link.add(link[i]);
+          _link.add(posts[i].link);
           return {_countKey: value[_countKey] + 1, _linkKey: _link};
         },
       );

@@ -1,5 +1,6 @@
 import 'package:diplom/bloc/detail_user_bloc/detail_user_bloc.dart';
 import 'package:diplom/utils/utils.dart';
+import 'package:diplom/widgets/calendar.dart';
 import 'package:diplom/widgets/charts/chart_day_post.dart';
 import 'package:diplom/widgets/charts/chart_like_count.dart';
 import 'package:diplom/widgets/charts/chart_true_false.dart';
@@ -28,7 +29,7 @@ class DetailUserScreen extends StatelessWidget {
       child: Provider<GlobalKey<ScaffoldState>>.value(
         value: scaffoldKey,
         child: BlocProviderBuilder<DetailUserBloc, DetailUserState>(
-          create: (context) => DetailUserBloc(),
+          create: (context) => DetailUserBloc(user.postInfo),
           builder: (context, state) {
             return Scaffold(
               key: scaffoldKey,
@@ -72,34 +73,31 @@ class _Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.watch<User>();
+    final _posts = context.watch<DetailUserBloc>().posts;
 
     return ListView(
       padding: Constants.listPadding,
       children: [
         const UserTitle(),
         const MainInfo(),
+        CalendarButton(),
         CustomExpansionTile(
           text: 'Постов в день',
-          children: <Widget>[ChartDayPost(data: user.postInfo.postPerDay())],
+          children: <Widget>[ChartDayPost(data: _posts.postPerDay())],
         ),
         CustomExpansionTile(
           text: 'Постов в течении дня',
-          children: <Widget>[
-            ChartAmongDayPost(data: user.postInfo.postAmongDay())
-          ],
+          children: <Widget>[ChartAmongDayPost(data: _posts.postAmongDay())],
         ),
         CustomExpansionTile(
           text: 'Количество коммерческих постов',
-          children: <Widget>[
-            ChartTrueFalse(data: user.postInfo.isCommercialData)
-          ],
+          children: <Widget>[ChartTrueFalse(data: _posts.isCommercialData)],
         ),
         CustomExpansionTile(
           text: 'Количество лайков в постах',
           children: <Widget>[
             ChartLikeCount(
-              data: user.postInfo.likeCountByPostData,
+              data: _posts.likeCountByPostData,
               title: 'лайки',
             )
           ],
@@ -108,7 +106,7 @@ class _Body extends StatelessWidget {
           text: 'Количество комментариев в постах',
           children: <Widget>[
             ChartLikeCount(
-              data: user.postInfo.commentCountByPostData,
+              data: _posts.commentCountByPostData,
               title: 'комментарии',
             )
           ],
