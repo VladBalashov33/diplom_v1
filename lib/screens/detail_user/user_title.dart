@@ -1,3 +1,4 @@
+import 'package:diplom/bloc/detail_user_bloc/detail_user_bloc.dart';
 import 'package:diplom/utils/utils.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +9,7 @@ class UserTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.watch<User>();
+    final user = context.watch<DetailUserBloc>().user;
 
     return Row(
       children: [

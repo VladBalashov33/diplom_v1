@@ -8,4 +8,8 @@ class UserRepository {
   Future<List<User>> getUsers() async {
     return await _api.getUsers();
   }
+
+  Future<User> getUser(int id) async {
+    return await _api.getUser(id);
+  }
 }

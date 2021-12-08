@@ -13,4 +13,9 @@ abstract class DetailUserState {
   int get hashCode => super.hashCode;
 }
 
-class DetailUserInitial extends DetailUserState {}
+class DetailUserInitial extends DetailUserState {
+  final UserPosts posts;
+  DetailUserInitial(this.posts);
+}
+
+class DetailUserLoading extends DetailUserState {}

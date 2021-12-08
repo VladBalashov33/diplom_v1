@@ -17,7 +17,7 @@ class UserListItem extends StatelessWidget {
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (_) => DetailUserScreen(user: user),
+            builder: (_) => DetailUserScreen(id: user.id),
           ),
         );
       },

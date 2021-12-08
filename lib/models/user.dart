@@ -24,10 +24,9 @@ class User {
   final List<String> alsoUrl;
   final bool isBusiness;
   final String typeBusiness;
-  final UserPosts postInfo;
+  final UserPosts? postInfo;
 
   User({
-    required this.postInfo,
     this.id = 0,
     this.name = '',
     this.username = '',
@@ -42,16 +41,57 @@ class User {
     this.alsoUrl = const [],
     this.isBusiness = false,
     this.typeBusiness = '',
+    this.postInfo,
   });
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    final _medias = json['medias'];
+    final _postsStat = UserPosts.init;
+
+    if (_medias != null) {
+      for (var i in (_medias as Map).keys) {
+        final _post = Post.fromJson(_medias[i], '$i');
+        _postsStat.addPost(_post);
+      }
+    }
+
+    final _alsoUrl = <String>[];
+    try {
+      _alsoUrl.addAll(json['external_link']);
+    } catch (e) {}
+    DateTime? dateTime;
+    try {
+      dateTime = DateTime.parse(json['last_update']);
+    } on Exception catch (e) {}
+    return User(
+      id: json['id'],
+      username: json['username'],
+      name: json['full_name'],
+      countPublished: json['media_count'],
+      subscribers: json['follower_count'],
+      countFollow: json['following_count'],
+      url: json['instagram_link'],
+      photo: json['pic'],
+      lastActivity: dateTime,
+      isBusiness: json['is_business'],
+      postInfo: _postsStat,
+      // :json['activate'],
+      // :json['is_updated'],
+//================================================================
+      description: json['biography'] ?? '',
+      alsoUrl: _alsoUrl,
+      typeBusiness: json['business_category'] ?? '',
+    );
+  }
 
   factory User.mock({int? id}) {
     final random = Random();
     final _postsStat = UserPosts.init;
 
-    for (var i in postJson['res'] as List) {
-      final _post = Post.fromJson(i);
-      _postsStat.addPost(_post);
-    }
+    // for (var i in postJson['res'] as List) {
+    //   final _post = Post.fromJson(i);
+    //   _postsStat.addPost(_post);
+    // }
 
     return User(
       id: id ?? 0,
@@ -74,7 +114,6 @@ class User {
       ],
       isBusiness: random.nextBool(),
       typeBusiness: 'Волк',
-      postInfo: _postsStat,
     );
   }
 

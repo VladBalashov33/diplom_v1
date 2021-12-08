@@ -1,8 +1,8 @@
 class ApiPath {
   const ApiPath._();
 
-  static const baseUrl = 'http://0.0.0.0:8000/api/v1/';
+  static const baseUrl = 'http://82.148.18.161:8080/';
 
-  static const signin = 'auth/signin/';
-  static String productFromCategory(int id) => 'product/categories/$id';
+  static const users = 'api/user-object/';
+  static String user(int id) => '$users$id';
 }

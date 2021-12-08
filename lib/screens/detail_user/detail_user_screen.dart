@@ -14,9 +14,9 @@ import 'main_info.dart';
 import 'user_title.dart';
 
 class DetailUserScreen extends StatelessWidget {
-  final User user;
+  final int id;
   const DetailUserScreen({
-    required this.user,
+    required this.id,
     Key? key,
   }) : super(key: key);
 
@@ -24,43 +24,40 @@ class DetailUserScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Provider<User>.value(
-      value: user,
-      child: Provider<GlobalKey<ScaffoldState>>.value(
-        value: scaffoldKey,
-        child: BlocProviderBuilder<DetailUserBloc, DetailUserState>(
-          create: (context) => DetailUserBloc(user.postInfo),
-          builder: (context, state) {
-            return Scaffold(
-              key: scaffoldKey,
-              drawerScrimColor: Colors.transparent,
-              endDrawer: const _Drawer(),
-              appBar: AppBar(
-                title: Text(user.username),
-                leading: IconButton(
-                  icon: const Icon(Icons.arrow_back),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                actions: <Widget>[Container()],
+    return Provider<GlobalKey<ScaffoldState>>.value(
+      value: scaffoldKey,
+      child: BlocProviderBuilder<DetailUserBloc, DetailUserState>(
+        create: (context) => DetailUserBloc(id),
+        builder: (context, state) {
+          return Scaffold(
+            key: scaffoldKey,
+            drawerScrimColor: Colors.transparent,
+            endDrawer: const _Drawer(),
+            appBar: AppBar(
+              title: Text(context.watch<DetailUserBloc>().user.username),
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
               ),
-              body: const _Body(),
-              //  BlocProviderBuilder<, >(
-              //   create: (context) => (),
-              //   builder: (context, state) {
-              //     return Stack(
-              //       children: [
-              //         const _Body(),
-              //         if (state is ChooseUserLoading)
-              // LoadingWidgets.loadingCenter(),
-              //       ],
-              //     );
-              //   },
-              // ),
-            );
-          },
-        ),
+              actions: <Widget>[Container()],
+            ),
+            body: const _Body(),
+            //  BlocProviderBuilder<, >(
+            //   create: (context) => (),
+            //   builder: (context, state) {
+            //     return Stack(
+            //       children: [
+            //         const _Body(),
+            //         if (state is ChooseUserLoading)
+            // LoadingWidgets.loadingCenter(),
+            //       ],
+            //     );
+            //   },
+            // ),
+          );
+        },
       ),
     );
   }

@@ -7,7 +7,7 @@ import 'location.dart';
 import 'user.dart';
 
 class Post {
-  final int takenAt;
+  final DateTime takenAt;
   final String id;
   final int mediaType;
   final CustomLocation location;
@@ -41,28 +41,52 @@ class Post {
     required this.usersInPhoto,
   });
 
-  factory Post.fromJson(Map<String, dynamic> json) {
+  factory Post.fromJson(Map<String, dynamic> json, String id) {
+    DateTime? dateTime;
+    try {
+      dateTime = DateTime.parse(json['date']);
+    } catch (e) {}
     return Post(
-      takenAt: json['taken_at'] ?? 0,
-      id: json['id'] ?? '',
+      id: id,
+      takenAt: dateTime ?? DateTime(1900),
+      link: json['link'] ?? '',
+      type: json['type'] ?? '',
+      likeCount: json['likes'] ?? 0,
       mediaType: json['media_type'] ?? 0,
+      commentCount: json['comments'] ?? 0,
+      tags: [], // json['hashtags'],
+      usersInPhoto: [], // json['friends'],
+      //===
       location: CustomLocation.fromJson(json['location'] ?? {}),
       shouldRequestAds: json['should_request_ads'] ?? false,
       likeAndViewCountsDisabled: json['like_and_view_counts_disabled'] ?? false,
       isCommercial: json['is_commercial'] ?? false,
       isPaidPartnership: json['is_paid_partnership'] ?? false,
-      commentCount: json['comment_count'] ?? 0,
-      likeCount: json['like_count'] ?? 0,
-      link: json['link'] ?? '',
       createdTime: json['created_time'] ?? '',
-      type: json['type'] ?? '',
-      // TODO: list tags and user in photos
-      tags: [], // json['tags'],
-      usersInPhoto: [], // json['users_in_photo'],
     );
   }
+  // factory Post.fromJson(Map<String, dynamic> json) {
+  //   return Post(
+  //     takenAt: json['taken_at'] ?? 0,
+  //     id: json['id'] ?? '',
+  //     mediaType: json['media_type'] ?? 0,
+  //     location: CustomLocation.fromJson(json['location'] ?? {}),
+  //     shouldRequestAds: json['should_request_ads'] ?? false,
+  //     likeAndViewCountsDisabled: json['like_and_view_counts_disabled'] ?? false,
+  //     isCommercial: json['is_commercial'] ?? false,
+  //     isPaidPartnership: json['is_paid_partnership'] ?? false,
+  //     commentCount: json['comment_count'] ?? 0,
+  //     likeCount: json['like_count'] ?? 0,
+  //     link: json['link'] ?? '',
+  //     createdTime: json['created_time'] ?? '',
+  //     type: json['type'] ?? '',
+  //     // TODO: list tags and user in photos
+  //     tags: [], // json['tags'],
+  //     usersInPhoto: [], // json['users_in_photo'],
+  //   );
+  // }
 
-  DateTime get getTime => DateTime.fromMillisecondsSinceEpoch(takenAt * 1000);
+  DateTime get getTime => takenAt;
 }
 
 class UserPosts {
