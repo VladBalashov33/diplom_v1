@@ -53,7 +53,7 @@ class ChartDateCount extends StatelessWidget {
             // },
             xValueMapper: (x, xx) => x.getDay,
             yValueMapper: (sales, _) => sales.item,
-            onPointTap: (data) {
+            onPointDoubleTap: (data) {
               print('==$data==');
             },
             // markerSettings: const MarkerSettings(isVisible: true),

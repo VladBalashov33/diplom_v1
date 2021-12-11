@@ -9,7 +9,10 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 class ChartDayPost extends StatelessWidget {
   const ChartDayPost({
     required this.data,
+    this.dateFormat,
   }) : super();
+
+  final DateFormat? dateFormat;
 
   final List<ChartDataItem> data;
 
@@ -22,7 +25,7 @@ class ChartDayPost extends StatelessWidget {
         primaryXAxis: DateTimeCategoryAxis(
           majorGridLines: const MajorGridLines(width: 0),
           labelIntersectAction: AxisLabelIntersectAction.rotate45,
-          dateFormat: DateFormat.yMd(),
+          dateFormat: dateFormat ?? DateFormat.yMd(),
         ),
         tooltipBehavior: TooltipBehavior(enable: true),
         primaryYAxis: NumericAxis(
@@ -36,7 +39,8 @@ class ChartDayPost extends StatelessWidget {
             dataSource: data,
             xValueMapper: (x, xx) => x.getDay,
             yValueMapper: (sales, _) => sales.item,
-            onPointTap: (point) {
+            name: '',
+            onPointDoubleTap: (point) {
               context
                   .read<DetailUserBloc>()
                   .setPostLinks(data[point.pointIndex!].links);
@@ -80,7 +84,7 @@ class ChartAmongDayPost extends StatelessWidget {
             dataSource: data,
             xValueMapper: (x, xx) => x.getHour.hour,
             yValueMapper: (sales, _) => sales.item,
-            onPointTap: (point) {
+            onPointDoubleTap: (point) {
               context
                   .read<DetailUserBloc>()
                   .setPostLinks(data[point.pointIndex!].links);

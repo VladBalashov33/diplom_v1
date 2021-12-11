@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CustomHtml extends StatelessWidget {
   const CustomHtml(this.url, {Key? key}) : super(key: key);
@@ -8,7 +10,27 @@ class CustomHtml extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Html(data: page(url));
+    return Column(
+      children: [
+        Html(data: page(url)),
+        const Padding(padding: EdgeInsets.only(top: 4)),
+        Linkify(
+          onOpen: _onOpen,
+          text: url,
+          overflow: TextOverflow.fade,
+          maxLines: 1,
+          softWrap: false,
+        ),
+      ],
+    );
+  }
+
+  Future<void> _onOpen(LinkableElement link) async {
+    if (await canLaunch(link.url)) {
+      await launch(link.url);
+    } else {
+      throw 'Could not launch $link';
+    }
   }
 
   String page(String url) => '''<iframe class="instagram-media

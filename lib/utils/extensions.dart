@@ -8,6 +8,10 @@ extension Convert on DateTime {
     return DateTime(year, month, day);
   }
 
+  DateTime toMonth() {
+    return DateTime(year, month);
+  }
+
   DateTime toHour() {
     return DateTime(1900, 1, 1, hour, 0);
   }

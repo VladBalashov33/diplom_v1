@@ -118,7 +118,9 @@ class UserPosts {
     final _posts = <Post>[];
     _posts.addAll(posts);
     _posts.removeWhere(
-      (e) => e.getTime.isAfter(_start) || e.getTime.isBefore(_end),
+      (e) {
+        return !(e.getTime.isAfter(_start) && e.getTime.isBefore(_end));
+      },
     );
     return UserPosts(
       posts: _posts,
@@ -174,6 +176,36 @@ class UserPosts {
 
     for (var i = 0; i < posts.length; i++) {
       final date = posts[i].getTime.toDay();
+      _map.containsKey(date)
+          ? _map.update(
+              date,
+              (value) {
+                final _link = value[_linkKey];
+                _link.add(posts[i].link);
+                return {_countKey: value[_countKey] + 1, _linkKey: _link};
+              },
+            )
+          : _map.addAll(
+              {
+                date: {
+                  _countKey: 1,
+                  _linkKey: [posts[i].link]
+                }
+              },
+            );
+    }
+    final _list = <ChartDataItem>[];
+    _map.forEach((key, value) {
+      _list.add(ChartDataItem(key, value[_countKey], links: value[_linkKey]));
+    });
+    return _list;
+  }
+
+  List<ChartDataItem> postPerMonth() {
+    final _map = <DateTime, Map<String, dynamic>>{};
+
+    for (var i = 0; i < posts.length; i++) {
+      final date = posts[i].getTime.toMonth();
       _map.containsKey(date)
           ? _map.update(
               date,

@@ -29,7 +29,7 @@ class ChartTrueFalse extends StatelessWidget {
             // groupMode: CircularChartGroupMode.value,
             // groupTo: 7,
             pointColorMapper: (data, _) => data.isBool ? null : Colors.red,
-            onPointTap: (point) {
+            onPointDoubleTap: (point) {
               context
                   .read<DetailUserBloc>()
                   .setPostLinks(data[point.pointIndex!].links);

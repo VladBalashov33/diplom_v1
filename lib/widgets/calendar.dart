@@ -13,11 +13,6 @@ GlobalKey<FormState> myFormKey = new GlobalKey();
 class _CalendarButtonState extends State<CalendarButton> {
   DateTimeRange? myDateRange;
 
-  void _submitForm() {
-    final FormState? form = myFormKey.currentState;
-    form!.save();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -25,12 +20,23 @@ class _CalendarButtonState extends State<CalendarButton> {
       child: Column(
         children: [
           DateRangeField(
+            firstDate: DateTime(2010),
+            lastDate: DateTime.now(),
+            initialValue: myDateRange,
             enabled: true,
-            decoration: const InputDecoration(
-              labelText: 'Date Range',
-              prefixIcon: Icon(Icons.date_range),
-              hintText: 'Please select a start and end date',
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: 'Временные границы постов',
+              prefixIcon: const Icon(Icons.date_range),
+              hintText: 'Выберете период',
+              border: const OutlineInputBorder(),
+              suffixIcon: IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () {
+                  context.read<DetailUserBloc>().setDateRange(null);
+                  myFormKey.currentState?.reset();
+                  setState(() => myDateRange = null);
+                },
+              ),
             ),
             validator: (value) {
               if (value!.start.isBefore(DateTime.now())) {
@@ -38,13 +44,9 @@ class _CalendarButtonState extends State<CalendarButton> {
               }
               return null;
             },
-            onSaved: (value) {
-              context.read<DetailUserBloc>().setDateRange(value);
-              setState(() => myDateRange = value!);
-            },
             onChanged: (value) {
               context.read<DetailUserBloc>().setDateRange(value);
-              setState(() => myDateRange = value!);
+              setState(() => myDateRange = value);
             },
           ),
         ],

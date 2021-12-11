@@ -111,7 +111,7 @@ class _DrawerState extends State<_Drawer> {
               ],
             ),
             const CustomExpansionTile(text: 'Фильтр', children: [
-              _RangeSlider(),
+              _RangeSliderSubs(),
             ]),
           ],
         ),
@@ -135,16 +135,16 @@ class _DrawerState extends State<_Drawer> {
   }
 }
 
-class _RangeSlider extends StatefulWidget {
-  const _RangeSlider({
+class _RangeSliderSubs extends StatefulWidget {
+  const _RangeSliderSubs({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<_RangeSlider> createState() => _RangeSliderState();
+  State<_RangeSliderSubs> createState() => _RangeSliderSubsState();
 }
 
-class _RangeSliderState extends State<_RangeSlider> {
+class _RangeSliderSubsState extends State<_RangeSliderSubs> {
   late RangeValues rangeValues;
   @override
   void initState() {
@@ -156,14 +156,18 @@ class _RangeSliderState extends State<_RangeSlider> {
   Widget build(BuildContext context) {
     final max = context.read<ChooseUserBloc>().subsRangeInit.end.to100();
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Text(
+          'Кол-во подписчиков',
+          style: Theme.of(context).textTheme.subtitle2,
+        ),
+        const Padding(padding: EdgeInsets.only(top: 12)),
         Row(
           children: [
-            const Padding(padding: EdgeInsets.only(left: 4)),
             Text('${rangeValues.start.toInt()}'),
             const Spacer(),
             Text('${rangeValues.end.toInt()}'),
-            const Padding(padding: EdgeInsets.only(left: 4)),
           ],
         ),
         const Padding(padding: EdgeInsets.only(top: 8)),

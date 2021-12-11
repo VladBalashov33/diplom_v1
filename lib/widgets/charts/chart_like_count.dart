@@ -38,7 +38,7 @@ class ChartLikeCount extends StatelessWidget {
             opacity: 0.7,
             xValueMapper: (x, xx) => x.getDay,
             yValueMapper: (sales, _) => sales.item,
-            onPointTap: (point) {
+            onPointDoubleTap: (point) {
               context
                   .read<DetailUserBloc>()
                   .setPostLinks(data[point.pointIndex!].links);

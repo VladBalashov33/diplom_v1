@@ -43,6 +43,7 @@ analyzer:
     avoid_catches_without_on_clauses: ignore
     avoid_setters_without_getters: ignore
     avoid_classes_with_only_static_members: ignore
+    undefined_prefixed_name: ignore
   exclude:
     - "bin/cache/**"
     # the following two are relative to the stocks example and the flutter package respectively

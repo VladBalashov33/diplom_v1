@@ -6,17 +6,16 @@ import 'package:diplom/widgets/charts/chart_like_count.dart';
 import 'package:diplom/widgets/charts/chart_true_false.dart';
 import 'package:diplom/widgets/html_container.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'main_info.dart';
 import 'user_title.dart';
 
 class DetailUserScreen extends StatelessWidget {
-  final int id;
+  final User user;
   const DetailUserScreen({
-    required this.id,
+    required this.user,
     Key? key,
   }) : super(key: key);
 
@@ -27,14 +26,14 @@ class DetailUserScreen extends StatelessWidget {
     return Provider<GlobalKey<ScaffoldState>>.value(
       value: scaffoldKey,
       child: BlocProviderBuilder<DetailUserBloc, DetailUserState>(
-        create: (context) => DetailUserBloc(id),
+        create: (context) => DetailUserBloc(user.id),
         builder: (context, state) {
           return Scaffold(
             key: scaffoldKey,
             drawerScrimColor: Colors.transparent,
             endDrawer: const _Drawer(),
             appBar: AppBar(
-              title: Text(context.watch<DetailUserBloc>().user.username),
+              title: Text(user.username),
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
                 onPressed: () {
@@ -43,19 +42,9 @@ class DetailUserScreen extends StatelessWidget {
               ),
               actions: <Widget>[Container()],
             ),
-            body: const _Body(),
-            //  BlocProviderBuilder<, >(
-            //   create: (context) => (),
-            //   builder: (context, state) {
-            //     return Stack(
-            //       children: [
-            //         const _Body(),
-            //         if (state is ChooseUserLoading)
-            // LoadingWidgets.loadingCenter(),
-            //       ],
-            //     );
-            //   },
-            // ),
+            body: state is DetailUserLoading
+                ? LoadingWidgets.loadingCenter()
+                : const _Body(),
           );
         },
       ),
@@ -83,13 +72,22 @@ class _Body extends StatelessWidget {
           children: <Widget>[ChartDayPost(data: _posts.postPerDay())],
         ),
         CustomExpansionTile(
+          text: 'Постов в месяц',
+          children: <Widget>[
+            ChartDayPost(
+              data: _posts.postPerMonth(),
+              dateFormat: DateFormat.MMM(),
+            )
+          ],
+        ),
+        CustomExpansionTile(
           text: 'Постов в течении дня',
           children: <Widget>[ChartAmongDayPost(data: _posts.postAmongDay())],
         ),
-        CustomExpansionTile(
-          text: 'Количество коммерческих постов',
-          children: <Widget>[ChartTrueFalse(data: _posts.isCommercialData)],
-        ),
+        // CustomExpansionTile(
+        //   text: 'Количество коммерческих постов',
+        //   children: <Widget>[ChartTrueFalse(data: _posts.isCommercialData)],
+        // ),
         CustomExpansionTile(
           text: 'Количество лайков в постах',
           children: <Widget>[
