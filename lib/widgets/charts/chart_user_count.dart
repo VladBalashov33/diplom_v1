@@ -1,6 +1,8 @@
+import 'package:diplom/bloc/detail_user_bloc/detail_user_bloc.dart';
 import 'package:diplom/models/chart_item.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class ChartUserCount extends StatelessWidget {
@@ -10,32 +12,46 @@ class ChartUserCount extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (data.isEmpty) {
+      return const Align(
+        alignment: Alignment.centerLeft,
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 12),
+          child: Text('Нет хештегов'),
+        ),
+      );
+    }
     return SingleChildScrollView(
       child: SizedBox(
-        height: 20 * data.length.toDouble(),
+        height: (20 * data.length.toDouble()) + 40,
         child: SfCartesianChart(
           primaryXAxis: CategoryAxis(
-            minimum: 20,
+            maximumLabelWidth: kIsWeb ? null : 140,
             // visibleMinimum: 20,
           ),
           tooltipBehavior: TooltipBehavior(enable: true),
-          title: ChartTitle(
-            text: 'Распределение постов относительно часа дня',
-          ),
-          primaryYAxis: CategoryAxis(
+          primaryYAxis: NumericAxis(
             majorTickLines: const MajorTickLines(size: 0),
             axisLine: const AxisLine(width: 0),
           ),
           series: <BarSeries<ChartStringItem, String>>[
             BarSeries<ChartStringItem, String>(
               dataSource: data,
-              name: 'постов в день',
+              name: '',
               xValueMapper: (x, xx) => x.str,
               yValueMapper: (sales, _) => sales.item,
               dataLabelSettings: const DataLabelSettings(
                 isVisible: true,
                 offset: Offset(-5, 0),
               ),
+              onPointDoubleTap: (point) {
+                context
+                    .read<DetailUserBloc>()
+                    .setPostLinks(data[point.pointIndex!].links);
+                Provider.of<GlobalKey<ScaffoldState>>(context, listen: false)
+                    .currentState!
+                    .openEndDrawer();
+              },
             ),
           ],
         ),

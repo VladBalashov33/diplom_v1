@@ -21,7 +21,7 @@ class Post {
   final String createdTime;
   final String type;
   final List<String> tags;
-  final List<User> usersInPhoto;
+  final List<String> usersInPhoto;
 
   Post({
     required this.takenAt,
@@ -42,20 +42,31 @@ class Post {
   });
 
   factory Post.fromJson(Map<String, dynamic> json, String id) {
-    DateTime? dateTime;
+    var _users = <String>[];
+    try {
+      _users = (json['friends'] as List).map((e) => e.toString()).toList();
+    } catch (e) {}
+    var _tags = <String>[];
+    try {
+      _tags = (json['hashtags'] as List).map((e) => e.toString()).toList();
+    } catch (e) {}
+    var dateTime = DateTime(1900);
     try {
       dateTime = DateTime.parse(json['date']);
     } catch (e) {}
+    final _link = json['link'] ??
+        'история от ${DateFormat('HH:mm - dd.MM.yy').format(dateTime)}';
+
     return Post(
       id: id,
-      takenAt: dateTime ?? DateTime(1900),
-      link: json['link'] ?? '',
+      takenAt: dateTime,
+      link: _link,
       type: json['type'] ?? '',
       likeCount: json['likes'] ?? 0,
       mediaType: json['media_type'] ?? 0,
       commentCount: json['comments'] ?? 0,
-      tags: [], // json['hashtags'],
-      usersInPhoto: [], // json['friends'],
+      tags: _tags,
+      usersInPhoto: _users,
       //===
       location: CustomLocation.fromJson(json['location'] ?? {}),
       shouldRequestAds: json['should_request_ads'] ?? false,
@@ -90,9 +101,9 @@ class Post {
 }
 
 class UserPosts {
-  List<Post> posts;
-  Set<String> tags;
-  Set<User> usersInPhoto;
+  final List<Post> posts;
+  final Map<String, ChartStringItem> tags;
+  final Map<String, ChartStringItem> usersInPhoto;
 
   UserPosts({
     required this.posts,
@@ -108,8 +119,38 @@ class UserPosts {
 
   void addPost(Post post) {
     posts.add(post);
-    tags.addAll(post.tags);
-    usersInPhoto.addAll(post.usersInPhoto);
+    for (var i in post.tags) {
+      tags.update(
+          i,
+          (value) => ChartStringItem(
+                i,
+                value.item + 1,
+                value.links..add(post.link),
+              ),
+          ifAbsent: () => ChartStringItem(i, 1, [post.link]));
+    }
+    for (var i in post.usersInPhoto) {
+      usersInPhoto.update(
+          i,
+          (value) => ChartStringItem(
+                i,
+                value.item + 1,
+                value.links..add(post.link),
+              ),
+          ifAbsent: () => ChartStringItem(i, 1, [post.link]));
+    }
+  }
+
+  List<ChartStringItem> get getTagsChartData {
+    final res = tags.values.toList();
+    res.sort((a, b) => a.item.compareTo(b.item));
+    return res;
+  }
+
+  List<ChartStringItem> get getFriendsChartData {
+    final res = usersInPhoto.values.toList();
+    res.sort((a, b) => a.item.compareTo(b.item));
+    return res;
   }
 
   UserPosts getPostInRange(DateTimeRange range) {
@@ -118,15 +159,11 @@ class UserPosts {
     final _posts = <Post>[];
     _posts.addAll(posts);
     _posts.removeWhere(
-      (e) {
-        return !(e.getTime.isAfter(_start) && e.getTime.isBefore(_end));
-      },
+      (e) => !(e.getTime.isAfter(_start) && e.getTime.isBefore(_end)),
     );
-    return UserPosts(
-      posts: _posts,
-      tags: tags,
-      usersInPhoto: usersInPhoto,
-    );
+    final res = UserPosts.init;
+    _posts.forEach(res.addPost);
+    return res;
   }
 
   List<ChartDataItem> get likeCountByPostData => _countData(
@@ -168,112 +205,48 @@ class UserPosts {
     ];
   }
 
-  static const _countKey = 'count';
-  static const _linkKey = 'link';
-
-  List<ChartDataItem> postPerDay() {
-    final _map = <DateTime, Map<String, dynamic>>{};
+  List<ChartDataItem> postPerPeriod(DateType type) {
+    final _map = <DateTime, ChartDataItem>{};
 
     for (var i = 0; i < posts.length; i++) {
-      final date = posts[i].getTime.toDay();
-      _map.containsKey(date)
-          ? _map.update(
-              date,
-              (value) {
-                final _link = value[_linkKey];
-                _link.add(posts[i].link);
-                return {_countKey: value[_countKey] + 1, _linkKey: _link};
-              },
-            )
-          : _map.addAll(
-              {
-                date: {
-                  _countKey: 1,
-                  _linkKey: [posts[i].link]
-                }
-              },
-            );
+      final date = posts[i].getTime.toDayType(type);
+      _map.update(
+        date,
+        (value) => ChartDataItem(
+          date,
+          value.item + 1,
+          links: value.links..add(posts[i].link),
+        ),
+        ifAbsent: () => ChartDataItem(date, 1, links: [posts[i].link]),
+      );
     }
-    final _list = <ChartDataItem>[];
-    _map.forEach((key, value) {
-      _list.add(ChartDataItem(key, value[_countKey], links: value[_linkKey]));
-    });
-    return _list;
+    return _map.values.toList();
   }
 
-  List<ChartDataItem> postPerMonth() {
-    final _map = <DateTime, Map<String, dynamic>>{};
-
-    for (var i = 0; i < posts.length; i++) {
-      final date = posts[i].getTime.toMonth();
-      _map.containsKey(date)
-          ? _map.update(
-              date,
-              (value) {
-                final _link = value[_linkKey];
-                _link.add(posts[i].link);
-                return {_countKey: value[_countKey] + 1, _linkKey: _link};
-              },
-            )
-          : _map.addAll(
-              {
-                date: {
-                  _countKey: 1,
-                  _linkKey: [posts[i].link]
-                }
-              },
-            );
-    }
-    final _list = <ChartDataItem>[];
-    _map.forEach((key, value) {
-      _list.add(ChartDataItem(key, value[_countKey], links: value[_linkKey]));
-    });
-    return _list;
-  }
+  Map<DateTime, ChartDataItem> _chartDataItem(int hour) => {
+        DateTime(1900, 1, 1, hour, 0): ChartDataItem(
+          DateTime(1900, 1, 1, hour, 0),
+          0,
+          links: <String>[],
+        )
+      };
 
   List<ChartDataItem> postAmongDay() {
-    final _map = <DateTime, Map<String, dynamic>>{
-      DateTime(1900, 1, 1, 0, 0): {_countKey: 0, _linkKey: <String>[]},
-      DateTime(1900, 1, 1, 1, 0): {_countKey: 0, _linkKey: <String>[]},
-      DateTime(1900, 1, 1, 2, 0): {_countKey: 0, _linkKey: <String>[]},
-      DateTime(1900, 1, 1, 3, 0): {_countKey: 0, _linkKey: <String>[]},
-      DateTime(1900, 1, 1, 4, 0): {_countKey: 0, _linkKey: <String>[]},
-      DateTime(1900, 1, 1, 5, 0): {_countKey: 0, _linkKey: <String>[]},
-      DateTime(1900, 1, 1, 6, 0): {_countKey: 0, _linkKey: <String>[]},
-      DateTime(1900, 1, 1, 7, 0): {_countKey: 0, _linkKey: <String>[]},
-      DateTime(1900, 1, 1, 8, 0): {_countKey: 0, _linkKey: <String>[]},
-      DateTime(1900, 1, 1, 9, 0): {_countKey: 0, _linkKey: <String>[]},
-      DateTime(1900, 1, 1, 10, 0): {_countKey: 0, _linkKey: <String>[]},
-      DateTime(1900, 1, 1, 11, 0): {_countKey: 0, _linkKey: <String>[]},
-      DateTime(1900, 1, 1, 12, 0): {_countKey: 0, _linkKey: <String>[]},
-      DateTime(1900, 1, 1, 13, 0): {_countKey: 0, _linkKey: <String>[]},
-      DateTime(1900, 1, 1, 14, 0): {_countKey: 0, _linkKey: <String>[]},
-      DateTime(1900, 1, 1, 15, 0): {_countKey: 0, _linkKey: <String>[]},
-      DateTime(1900, 1, 1, 16, 0): {_countKey: 0, _linkKey: <String>[]},
-      DateTime(1900, 1, 1, 17, 0): {_countKey: 0, _linkKey: <String>[]},
-      DateTime(1900, 1, 1, 18, 0): {_countKey: 0, _linkKey: <String>[]},
-      DateTime(1900, 1, 1, 19, 0): {_countKey: 0, _linkKey: <String>[]},
-      DateTime(1900, 1, 1, 20, 0): {_countKey: 0, _linkKey: <String>[]},
-      DateTime(1900, 1, 1, 21, 0): {_countKey: 0, _linkKey: <String>[]},
-      DateTime(1900, 1, 1, 22, 0): {_countKey: 0, _linkKey: <String>[]},
-      DateTime(1900, 1, 1, 23, 0): {_countKey: 0, _linkKey: <String>[]},
-    };
-
+    final _map = <DateTime, ChartDataItem>{};
+    for (var i = 0; i < 24; i++) {
+      _map.addAll(_chartDataItem(i));
+    }
     for (var i = 0; i < posts.length; i++) {
       final date = posts[i].getTime.toHour();
       _map.update(
         date,
-        (value) {
-          final _link = value[_linkKey];
-          _link.add(posts[i].link);
-          return {_countKey: value[_countKey] + 1, _linkKey: _link};
-        },
+        (value) => ChartDataItem(
+          date,
+          value.item + 1,
+          links: value.links..add(posts[i].link),
+        ),
       );
     }
-    final _list = <ChartDataItem>[];
-    _map.forEach((key, value) {
-      _list.add(ChartDataItem(key, value[_countKey], links: value[_linkKey]));
-    });
-    return _list;
+    return _map.values.toList();
   }
 }

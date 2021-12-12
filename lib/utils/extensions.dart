@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+enum DateType { day, month, year, hour }
+
 extension Convert on DateTime {
   DateTime toDay() {
     return DateTime(year, month, day);
@@ -12,8 +14,27 @@ extension Convert on DateTime {
     return DateTime(year, month);
   }
 
+  DateTime toYear() {
+    return DateTime(year);
+  }
+
   DateTime toHour() {
     return DateTime(1900, 1, 1, hour, 0);
+  }
+
+  DateTime toDayType(DateType type) {
+    switch (type) {
+      case DateType.day:
+        return toDay();
+      case DateType.month:
+        return toMonth();
+      case DateType.year:
+        return toYear();
+      case DateType.hour:
+        return toHour();
+      default:
+        return this;
+    }
   }
 }
 

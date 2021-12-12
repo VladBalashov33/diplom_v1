@@ -8,15 +8,24 @@ import 'package:meta/meta.dart';
 part 'detail_user_state.dart';
 
 class DetailUserBloc extends Cubit<DetailUserState> {
-  DetailUserBloc(this.id) : super(DetailUserLoading()) {
+  DetailUserBloc(this.id) : super(const DetailUserLoading()) {
     getUser();
   }
   final int id;
 
   final _repository = UserRepository();
 
-  void addInitialEvent(UserPosts value) => emit(DetailUserInitial(value));
-  void addLoadingEvent() => emit(DetailUserLoading());
+  void addPostsEvent() => emit(DetailUserPosts(user.getPostInfo));
+  void addStoresEvent() => emit(DetailUserStores(user.getStoryInfo));
+  void addAllEvent() {
+    final res = UserPosts.init;
+    user.getPostInfo.posts.forEach(res.addPost);
+    user.getStoryInfo.posts.forEach(res.addPost);
+    emit(DetailUserAll(res));
+  }
+
+  void addLoadingEvent() => emit(const DetailUserLoading());
+  void addErrEvent() => emit(const DetailUserErr());
 
   User? _user;
 
@@ -30,11 +39,7 @@ class DetailUserBloc extends Cubit<DetailUserState> {
   }
 
   UserPosts get _posts {
-    if (state is DetailUserInitial) {
-      return (state as DetailUserInitial).posts;
-    } else {
-      return UserPosts.init;
-    }
+    return state.posts ?? UserPosts.init;
   }
 
   DateTimeRange? _dateRange;
@@ -55,10 +60,29 @@ class DetailUserBloc extends Cubit<DetailUserState> {
     addLoadingEvent();
     return _repository.getUser(id).then((value) {
       _user = value;
-      addInitialEvent(value.postInfo ?? UserPosts.init);
+      addAllEvent();
     }, onError: (e) {
       print('=getUser=$e==');
-      addInitialEvent(UserPosts.init);
+      addErrEvent();
     });
+  }
+
+  void switchState({required bool isPost, required bool isStory}) {
+    if (isPost && isStory) {
+      addAllEvent();
+      return;
+    }
+    if (!isPost && isStory) {
+      addStoresEvent();
+      return;
+    }
+    if (isPost && !isStory) {
+      addPostsEvent();
+      return;
+    }
+    if (!isPost && !isStory) {
+      addErrEvent();
+      return;
+    }
   }
 }

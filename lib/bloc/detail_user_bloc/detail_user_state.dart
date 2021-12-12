@@ -11,11 +11,27 @@ abstract class DetailUserState {
 
   @override
   int get hashCode => super.hashCode;
+
+  final UserPosts? posts;
+  const DetailUserState(this.posts);
 }
 
-class DetailUserInitial extends DetailUserState {
-  final UserPosts posts;
-  DetailUserInitial(this.posts);
+class DetailUserPosts extends DetailUserState {
+  const DetailUserPosts(UserPosts posts) : super(posts);
 }
 
-class DetailUserLoading extends DetailUserState {}
+class DetailUserStores extends DetailUserState {
+  const DetailUserStores(UserPosts posts) : super(posts);
+}
+
+class DetailUserAll extends DetailUserState {
+  const DetailUserAll(UserPosts posts) : super(posts);
+}
+
+class DetailUserLoading extends DetailUserState {
+  const DetailUserLoading() : super(null);
+}
+
+class DetailUserErr extends DetailUserState {
+  const DetailUserErr() : super(null);
+}

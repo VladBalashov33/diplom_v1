@@ -10,6 +10,12 @@ class CustomHtml extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (url.contains('от')) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Text(url),
+      );
+    }
     return Column(
       children: [
         Html(data: page(url)),

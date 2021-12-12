@@ -1,9 +1,11 @@
 import 'package:diplom/bloc/detail_user_bloc/detail_user_bloc.dart';
+import 'package:diplom/models/chart_item.dart';
 import 'package:diplom/utils/utils.dart';
 import 'package:diplom/widgets/calendar.dart';
 import 'package:diplom/widgets/charts/chart_day_post.dart';
 import 'package:diplom/widgets/charts/chart_like_count.dart';
 import 'package:diplom/widgets/charts/chart_true_false.dart';
+import 'package:diplom/widgets/charts/chart_user_count.dart';
 import 'package:diplom/widgets/html_container.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -66,18 +68,22 @@ class _Body extends StatelessWidget {
       children: [
         const UserTitle(),
         const MainInfo(),
+        const _Switchers(),
         CalendarButton(),
-        CustomExpansionTile(
-          text: 'Постов в день',
-          children: <Widget>[ChartDayPost(data: _posts.postPerDay())],
-        ),
+        const _HelpText(),
         CustomExpansionTile(
           text: 'Постов в месяц',
           children: <Widget>[
             ChartDayPost(
-              data: _posts.postPerMonth(),
+              data: _posts.postPerPeriod(DateType.month),
               dateFormat: DateFormat.MMM(),
             )
+          ],
+        ),
+        CustomExpansionTile(
+          text: 'Постов в день',
+          children: <Widget>[
+            ChartDayPost(data: _posts.postPerPeriod(DateType.day))
           ],
         ),
         CustomExpansionTile(
@@ -88,6 +94,7 @@ class _Body extends StatelessWidget {
         //   text: 'Количество коммерческих постов',
         //   children: <Widget>[ChartTrueFalse(data: _posts.isCommercialData)],
         // ),
+
         CustomExpansionTile(
           text: 'Количество лайков в постах',
           children: <Widget>[
@@ -106,9 +113,97 @@ class _Body extends StatelessWidget {
             )
           ],
         ),
+
+        CustomExpansionTile(
+          text: 'Хештеги',
+          children: <Widget>[ChartUserCount(data: _posts.getTagsChartData)],
+        ),
+        CustomExpansionTile(
+          text: 'Отмеченные друзья',
+          children: <Widget>[ChartUserCount(data: _posts.getFriendsChartData)],
+        ),
         const Padding(padding: EdgeInsets.only(top: 200)),
         const SafeArea(top: false, child: SizedBox()),
       ],
+    );
+  }
+}
+
+class _Switchers extends StatefulWidget {
+  const _Switchers({Key? key}) : super(key: key);
+
+  @override
+  __SwitchersState createState() => __SwitchersState();
+}
+
+class __SwitchersState extends State<_Switchers> {
+  late bool _isPost;
+  late bool _isStory;
+  @override
+  void initState() {
+    _isPost = true;
+    _isStory = false;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        ListTile(
+          title: const Text('Учитывать посты'),
+          leading: SizedBox(
+            width: 45,
+            child: Switch(
+              value: _isPost,
+              onChanged: (value) {
+                context.read<DetailUserBloc>().switchState(
+                      isPost: value,
+                      isStory: _isStory,
+                    );
+                setState(() => _isPost = value);
+              },
+            ),
+          ),
+        ),
+        ListTile(
+          title: const Text('Учитывать истории'),
+          leading: SizedBox(
+            width: 45,
+            child: Switch(
+              value: _isStory,
+              onChanged: (value) {
+                context.read<DetailUserBloc>().switchState(
+                      isPost: _isPost,
+                      isStory: value,
+                    );
+                setState(() => _isStory = value);
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _HelpText extends StatelessWidget {
+  const _HelpText({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Text(
+        '*Двойной клик на точке графика - показ постов в данной точке',
+        style: TextStyle(
+          fontSize: 11,
+          color: Colors.black.withOpacity(0.6),
+          fontStyle: FontStyle.italic,
+        ),
+      ),
     );
   }
 }

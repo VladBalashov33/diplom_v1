@@ -25,6 +25,7 @@ class User {
   final bool isBusiness;
   final String typeBusiness;
   final UserPosts? postInfo;
+  final UserPosts? storyInfo;
 
   User({
     this.id = 0,
@@ -42,7 +43,10 @@ class User {
     this.isBusiness = false,
     this.typeBusiness = '',
     this.postInfo,
+    this.storyInfo,
   });
+  UserPosts get getPostInfo => postInfo ?? UserPosts.init;
+  UserPosts get getStoryInfo => storyInfo ?? UserPosts.init;
 
   factory User.fromJson(Map<String, dynamic> json) {
     final _medias = json['medias'];
@@ -52,6 +56,15 @@ class User {
       for (var i in (_medias as Map).keys) {
         final _post = Post.fromJson(_medias[i], '$i');
         _postsStat.addPost(_post);
+      }
+    }
+    final _stores = json['stories'];
+    final _storyStat = UserPosts.init;
+
+    if (_stores != null) {
+      for (var i in (_stores as Map).keys) {
+        final _post = Post.fromJson(_stores[i], '$i');
+        _storyStat.addPost(_post);
       }
     }
 
@@ -75,6 +88,7 @@ class User {
       lastActivity: dateTime,
       isBusiness: json['is_business'],
       postInfo: _postsStat,
+      storyInfo: _storyStat,
       // :json['activate'],
       // :json['is_updated'],
 //================================================================
