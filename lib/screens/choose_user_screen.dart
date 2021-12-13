@@ -22,8 +22,19 @@ class ChooseUserScreen extends StatelessWidget {
         title: const Text('Выберете пользователя'),
         actions: [
           IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () {
+              context.read<ChooseUserBloc>().getUsers();
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.people),
+            onPressed: () {
+              _displayTextInputDialog(context);
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.filter_list),
-            tooltip: 'Open shopping cart',
             onPressed: () {
               scaffoldKey.currentState?.openEndDrawer();
             },
@@ -54,6 +65,40 @@ class ChooseUserScreen extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+
+  Future<void> _displayTextInputDialog(BuildContext context) async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        final _textFieldController = TextEditingController();
+        return AlertDialog(
+          title: const Text('Добавить пользователя'),
+          content: TextField(
+            onChanged: (value) {},
+            controller: _textFieldController,
+            decoration: const InputDecoration(hintText: 'Введите username'),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Отмена'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            TextButton(
+              child: const Text('ОК'),
+              onPressed: () {
+                context
+                    .read<ChooseUserBloc>()
+                    .addUser(_textFieldController.text);
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -110,9 +155,12 @@ class _DrawerState extends State<_Drawer> {
                 _radioItem(SortType.postCount),
               ],
             ),
-            const CustomExpansionTile(text: 'Фильтр', children: [
-              _RangeSliderSubs(),
-            ]),
+            const CustomExpansionTile(
+              text: 'Фильтр',
+              children: [
+                _RangeSliderSubs(),
+              ],
+            ),
           ],
         ),
       ),

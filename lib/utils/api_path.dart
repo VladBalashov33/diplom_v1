@@ -5,4 +5,5 @@ class ApiPath {
 
   static const users = 'api/user-object/';
   static String user(int id) => '$users$id';
+  static String userDel(int id) => '$users$id/';
 }

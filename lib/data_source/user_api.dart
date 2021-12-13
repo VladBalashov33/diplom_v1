@@ -18,9 +18,6 @@ class UserApi with SendWithToastMixin {
       ),
     );
     return (response.data as List).map((e) => User.fromJson(e)).toList();
-    // await Future.delayed(Constants.delayDuration);
-
-    // return List.generate(20, (index) => User.mock());
   }
 
   Future<User> getUser(int id) async {
@@ -31,8 +28,27 @@ class UserApi with SendWithToastMixin {
       ),
     );
     return User.fromJson(response.data);
-    // await Future.delayed(Constants.delayDuration);
+  }
 
-    // return List.generate(20, (index) => User.mock());
+  Future<Response> addUser(String username) async {
+    final Response response = await sendWithToast(
+      tryBloc: _client.post(
+        ApiPath.users,
+        options: Options(headers: {'Content-Type': 'application/json'}),
+        data: {'username': username},
+      ),
+      info: 'username',
+    );
+    return response;
+  }
+
+  Future<Response> deleteUser(int id) async {
+    final Response response = await sendWithToast(
+      tryBloc: _client.delete(
+        ApiPath.userDel(id),
+        options: Options(headers: {'Content-Type': 'application/json'}),
+      ),
+    );
+    return response;
   }
 }

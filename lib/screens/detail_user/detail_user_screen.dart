@@ -1,3 +1,4 @@
+import 'package:diplom/bloc/choose_user_bloc/choose_user_bloc.dart';
 import 'package:diplom/bloc/detail_user_bloc/detail_user_bloc.dart';
 import 'package:diplom/models/chart_item.dart';
 import 'package:diplom/utils/utils.dart';
@@ -27,7 +28,13 @@ class DetailUserScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Provider<GlobalKey<ScaffoldState>>.value(
       value: scaffoldKey,
-      child: BlocProviderBuilder<DetailUserBloc, DetailUserState>(
+      child: BlocProviderConsumer<DetailUserBloc, DetailUserState>(
+        listener: (context, state) {
+          if (state is DetailUserDelete) {
+            context.read<ChooseUserBloc>().getUsers();
+            Navigator.of(context).pop();
+          }
+        },
         create: (context) => DetailUserBloc(user.id),
         builder: (context, state) {
           return Scaffold(
@@ -68,6 +75,14 @@ class _Body extends StatelessWidget {
       children: [
         const UserTitle(),
         const MainInfo(),
+        TextButton(
+          onPressed: () {
+            _deleteDialog(context, () {
+              context.read<DetailUserBloc>().delUser();
+            });
+          },
+          child: const Text('Удалить', style: TextStyle(color: Colors.red)),
+        ),
         const _Switchers(),
         CalendarButton(),
         const _HelpText(),
@@ -125,6 +140,33 @@ class _Body extends StatelessWidget {
         const Padding(padding: EdgeInsets.only(top: 200)),
         const SafeArea(top: false, child: SizedBox()),
       ],
+    );
+  }
+
+  Future<void> _deleteDialog(BuildContext context, Function() onDel) async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Удалить пользователя?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Отмена'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            TextButton(
+              child: const Text('ОК'),
+              onPressed: () {
+                onDel();
+
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

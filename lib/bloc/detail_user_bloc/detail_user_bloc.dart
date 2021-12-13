@@ -26,6 +26,7 @@ class DetailUserBloc extends Cubit<DetailUserState> {
 
   void addLoadingEvent() => emit(const DetailUserLoading());
   void addErrEvent() => emit(const DetailUserErr());
+  void addDelEvent() => emit(const DetailUserDelete());
 
   User? _user;
 
@@ -60,10 +61,21 @@ class DetailUserBloc extends Cubit<DetailUserState> {
     addLoadingEvent();
     return _repository.getUser(id).then((value) {
       _user = value;
-      addAllEvent();
+      addPostsEvent();
     }, onError: (e) {
       print('=getUser=$e==');
       addErrEvent();
+    });
+  }
+
+  Future<void> delUser() async {
+    addLoadingEvent();
+    return _repository.delUser(id).then((value) {
+      ToastMsg.showToast('Пользователь удален');
+      addDelEvent();
+    }, onError: (e) {
+      print('=getUser=$e==');
+      addPostsEvent();
     });
   }
 

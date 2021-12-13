@@ -35,3 +35,7 @@ class DetailUserLoading extends DetailUserState {
 class DetailUserErr extends DetailUserState {
   const DetailUserErr() : super(null);
 }
+
+class DetailUserDelete extends DetailUserState {
+  const DetailUserDelete() : super(null);
+}

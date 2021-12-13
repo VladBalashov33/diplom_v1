@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 class DefaultButton extends StatelessWidget {
   final Function()? onTap;
+  final Color? color;
   final String text;
   final double? width;
   final double? height;
@@ -13,6 +14,7 @@ class DefaultButton extends StatelessWidget {
   const DefaultButton({
     required this.text,
     this.onTap,
+    this.color,
     this.width,
     this.height,
     this.style,
@@ -32,7 +34,10 @@ class DefaultButton extends StatelessWidget {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          color: isActive ? Colors.black : Colors.white.withOpacity(0.2),
+          color: color ??
+              (isActive
+                  ? const Color(0xff607d8b)
+                  : Colors.white.withOpacity(0.2)),
         ),
         child: Text(
           text,

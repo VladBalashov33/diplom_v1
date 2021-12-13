@@ -85,6 +85,17 @@ class ChooseUserBloc extends Cubit<ChooseUserState> {
     });
   }
 
+  Future<void> addUser(String username) async {
+    addLoadingEvent();
+    return _repository.addUser(username).then((value) {
+      ToastMsg.showToast('Пользователь добавлен');
+      getUsers();
+    }, onError: (e) {
+      print('=getUsers=$e==');
+      addSuccessEvent();
+    });
+  }
+
   List<User> get _sortUsers {
     switch (_sortType) {
       case SortType.username:
