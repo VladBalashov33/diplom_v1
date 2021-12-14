@@ -1,4 +1,5 @@
 import 'package:diplom/models/chart_item.dart';
+import 'package:diplom/screens/detail_user/detail_user_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -35,6 +36,9 @@ class ChartHourPost extends StatelessWidget {
             name: 'постов в день',
             xValueMapper: (x, xx) => x.getDay,
             yValueMapper: (sales, _) => sales.item,
+            onPointDoubleTap: (point) {
+              toListLinks(context, data[point.pointIndex!].links);
+            },
           ),
         ],
       ),

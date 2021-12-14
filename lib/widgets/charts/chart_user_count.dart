@@ -1,5 +1,6 @@
 import 'package:diplom/bloc/detail_user_bloc/detail_user_bloc.dart';
 import 'package:diplom/models/chart_item.dart';
+import 'package:diplom/screens/detail_user/detail_user_screen.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -45,12 +46,7 @@ class ChartUserCount extends StatelessWidget {
                 offset: Offset(-5, 0),
               ),
               onPointDoubleTap: (point) {
-                context
-                    .read<DetailUserBloc>()
-                    .setPostLinks(data[point.pointIndex!].links);
-                Provider.of<GlobalKey<ScaffoldState>>(context, listen: false)
-                    .currentState!
-                    .openEndDrawer();
+                toListLinks(context, data[point.pointIndex!].links);
               },
             ),
           ],

@@ -1,11 +1,10 @@
 import 'package:diplom/bloc/choose_user_bloc/choose_user_bloc.dart';
 import 'package:diplom/bloc/detail_user_bloc/detail_user_bloc.dart';
-import 'package:diplom/models/chart_item.dart';
+import 'package:diplom/screens/links_screen.dart';
 import 'package:diplom/utils/utils.dart';
 import 'package:diplom/widgets/calendar.dart';
 import 'package:diplom/widgets/charts/chart_day_post.dart';
 import 'package:diplom/widgets/charts/chart_like_count.dart';
-import 'package:diplom/widgets/charts/chart_true_false.dart';
 import 'package:diplom/widgets/charts/chart_user_count.dart';
 import 'package:diplom/widgets/html_container.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +48,6 @@ class DetailUserScreen extends StatelessWidget {
                   Navigator.of(context).pop();
                 },
               ),
-              actions: <Widget>[Container()],
             ),
             body: state is DetailUserLoading
                 ? LoadingWidgets.loadingCenter()
@@ -75,16 +73,7 @@ class _Body extends StatelessWidget {
       children: [
         const UserTitle(),
         const MainInfo(),
-        TextButton(
-          onPressed: () {
-            _deleteDialog(context, () {
-              context.read<DetailUserBloc>().delUser();
-            });
-          },
-          child: const Text('Удалить', style: TextStyle(color: Colors.red)),
-        ),
-        const _Switchers(),
-        CalendarButton(),
+
         const _HelpText(),
         CustomExpansionTile(
           text: 'Постов в месяц',
@@ -142,33 +131,21 @@ class _Body extends StatelessWidget {
       ],
     );
   }
+}
 
-  Future<void> _deleteDialog(BuildContext context, Function() onDel) async {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Удалить пользователя?'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Отмена'),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            TextButton(
-              child: const Text('ОК'),
-              onPressed: () {
-                onDel();
-
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+void toListLinks(BuildContext context, List<String> links) {
+  context.read<DetailUserBloc>().setPostLinks(links);
+  // Provider.of<GlobalKey<ScaffoldState>>(context, listen: false)
+  //     .currentState!
+  //     .openEndDrawer();
+  Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (_) => BlocProvider.value(
+        value: context.read<DetailUserBloc>(),
+        child: const LinksScreen(),
+      ),
+    ),
+  );
 }
 
 class _Switchers extends StatefulWidget {
@@ -257,49 +234,51 @@ class _Drawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final items = context.watch<DetailUserBloc>().postLinks;
     return Drawer(
-      child: ListView.separated(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 60),
-        itemBuilder: (context, index) => CustomHtml(items[index]),
-        separatorBuilder: (context, index) => const Padding(
-          padding: EdgeInsets.only(top: 8),
-        ),
-        itemCount: items.length,
+      child: Column(
+        children: [
+          const SafeArea(bottom: false, child: SizedBox()),
+          const Padding(padding: EdgeInsets.only(top: 20)),
+          const _Switchers(),
+          CalendarButton(context.watch<DetailUserBloc>().dateRange),
+          const Spacer(),
+          TextButton(
+            onPressed: () => _deleteDialog(context, () {
+              context.read<DetailUserBloc>().delUser();
+            }),
+            child: const Text('Удалить', style: TextStyle(color: Colors.red)),
+          ),
+          const Padding(padding: EdgeInsets.only(top: 20)),
+          const SafeArea(top: false, child: SizedBox()),
+        ],
       ),
     );
   }
+
+  Future<void> _deleteDialog(BuildContext context, Function() onDel) async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Удалить пользователя?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Отмена'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            TextButton(
+              child: const Text('ОК'),
+              onPressed: () {
+                onDel();
+
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
-// class _Drawer extends StatelessWidget {
-//   const _Drawer({
-//     Key? key,
-//   }) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Drawer(
-//       child: Column(
-//         children: [
-//           const SafeArea(bottom: false, child: SizedBox()),
-//           ...context
-//               .watch<DetailUserBloc>()
-//               .postLinks
-//               .map(
-//                 (e) => Linkify(onOpen: _onOpen, text: e),
-//               )
-//               .toList(),
-//           const SafeArea(top: false, child: SizedBox()),
-//         ],
-//       ),
-//     );
-//   }
-
-//   Future<void> _onOpen(LinkableElement link) async {
-//     if (await canLaunch(link.url)) {
-//       await launch(link.url);
-//     } else {
-//       throw 'Could not launch $link';
-//     }
-//   }
-// }
-

@@ -48,7 +48,7 @@ class CachedImage extends StatelessWidget {
                     return const ErrorContainer();
                   },
                 )
-              : Container(
+              : SizedBox(
                   height: height,
                   width: width,
                   child: Image.network(

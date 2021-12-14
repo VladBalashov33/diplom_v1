@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/src/provider.dart';
 
 class CalendarButton extends StatefulWidget {
+  const CalendarButton(this.initDate) : super();
+  final DateTimeRange? initDate;
   @override
   _CalendarButtonState createState() => _CalendarButtonState();
 }
@@ -12,6 +14,11 @@ GlobalKey<FormState> myFormKey = new GlobalKey();
 
 class _CalendarButtonState extends State<CalendarButton> {
   DateTimeRange? myDateRange;
+  @override
+  void initState() {
+    myDateRange = widget.initDate;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +42,7 @@ class _CalendarButtonState extends State<CalendarButton> {
                   context.read<DetailUserBloc>().setDateRange(null);
                   myFormKey.currentState?.reset();
                   setState(() => myDateRange = null);
+                  Navigator.of(context).pop();
                 },
               ),
             ),
