@@ -6,30 +6,35 @@ import 'package:provider/provider.dart';
 
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-class ChartTrueFalse extends StatelessWidget {
-  const ChartTrueFalse({required this.data}) : super();
+class ChartCurricular extends StatelessWidget {
+  const ChartCurricular({required this.data}) : super();
 
-  final List<ChartBoolItem> data;
+  final List<ChartStringItem> data;
 
   @override
   Widget build(BuildContext context) {
+    var all = 0;
+    for (var i in data) {
+      all += i.item;
+    }
     return SizedBox(
-      height: 300,
+      height: 250,
       child: SfCircularChart(
         tooltipBehavior: TooltipBehavior(enable: true),
-        series: <PieSeries<ChartBoolItem, bool>>[
-          PieSeries<ChartBoolItem, bool>(
+        series: <PieSeries<ChartStringItem, String>>[
+          PieSeries<ChartStringItem, String>(
             dataSource: data,
-            xValueMapper: (x, xx) => x.isBool,
+            xValueMapper: (x, xx) => x.str,
             yValueMapper: (sales, _) => sales.item,
-            dataLabelMapper: (data, count) => '${data.isBool} ${data.item}',
+            dataLabelMapper: (data, count) =>
+                '${data.str} ${(data.item / all * 100).toInt()}%',
             dataLabelSettings: const DataLabelSettings(
               isVisible: true,
               labelPosition: ChartDataLabelPosition.outside,
             ),
             // groupMode: CircularChartGroupMode.value,
             // groupTo: 7,
-            pointColorMapper: (data, _) => data.isBool ? null : Colors.red,
+            // pointColorMapper: (data, _) => data.isBool ? null : Colors.red,
             onPointDoubleTap: (point) {
               toListLinks(context, data[point.pointIndex!].links);
             },

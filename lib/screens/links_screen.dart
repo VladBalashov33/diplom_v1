@@ -48,7 +48,7 @@ class LinksScreen extends StatelessWidget {
                           ? MainInfo(
                               user: context.watch<FriendInfoBloc>().friend!,
                             )
-                          : SizedBox(),
+                          : const SizedBox(),
                 ),
               Expanded(
                 child: ListView.separated(

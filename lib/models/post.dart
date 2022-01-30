@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:diplom/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:diplom/utils/utils.dart';
 
 import 'chart_item.dart';
 import 'location.dart';
@@ -107,12 +108,34 @@ class Post {
   }
 
   DateTime get getTime => takenAt;
+  PeriodDay get getDayPeriod {
+    final date = getTime.toHour().hour;
+    if (date < 6) {
+      return PeriodDay.night;
+    } else if (date < 12) {
+      return PeriodDay.morning;
+    } else if (date < 18) {
+      return PeriodDay.day;
+    } else {
+      return PeriodDay.evening;
+    }
+  }
 }
+
+enum PeriodDay { morning, day, evening, night }
+const Map<PeriodDay, String> dayPeriodStrings = {
+  PeriodDay.morning: 'Утро',
+  PeriodDay.day: 'День',
+  PeriodDay.evening: 'Вечер',
+  PeriodDay.night: 'Ночь',
+};
 
 class UserPosts {
   final List<Post> posts;
   final Map<String, ChartStringItem> tags;
   final Map<String, ChartStringItem> usersInPhoto;
+
+  final List<int> tagsCountList = [];
 
   UserPosts({
     required this.posts,
@@ -128,6 +151,7 @@ class UserPosts {
 
   void addPost(Post post) {
     posts.add(post);
+    tagsCountList.add(post.tags.length);
     for (var i in post.tags) {
       tags.update(
           i,
@@ -225,8 +249,14 @@ class UserPosts {
           date,
           value.item + 1,
           links: value.links..add(posts[i].link),
+          posts: value.posts?..add(posts[i]),
         ),
-        ifAbsent: () => ChartDataItem(date, 1, links: [posts[i].link]),
+        ifAbsent: () => ChartDataItem(
+          date,
+          1,
+          links: [posts[i].link],
+          posts: [posts[i]],
+        ),
       );
     }
     return _map.values.toList();
@@ -258,4 +288,88 @@ class UserPosts {
     }
     return _map.values.toList();
   }
+
+  String get meanLikes => getMean(posts, (e) => (e as Post).likeCount);
+
+  String get meanComment => getMean(posts, (e) => (e as Post).commentCount);
+
+  String get meanTags => getMean(tagsCountList, (e) => e as int);
+}
+
+class PostFunc {
+  const PostFunc._();
+
+  static List<ChartStringItem> postAmongDayPeriod(List<Post> value) {
+    var _morning = 0;
+    var _day = 0;
+    var _evening = 0;
+    var _night = 0;
+    final _morningLinks = <String>[];
+    final _dayLinks = <String>[];
+    final _eveningLinks = <String>[];
+    final _nightLinks = <String>[];
+    for (var i = 0; i < value.length; i++) {
+      switch (value[i].getDayPeriod) {
+        case PeriodDay.morning:
+          _morning++;
+          _morningLinks.add(value[i].link);
+          break;
+        case PeriodDay.day:
+          _day++;
+          _dayLinks.add(value[i].link);
+          break;
+        case PeriodDay.evening:
+          _evening++;
+          _eveningLinks.add(value[i].link);
+          break;
+        case PeriodDay.night:
+          _night++;
+          _nightLinks.add(value[i].link);
+          break;
+      }
+    }
+    return [
+      ChartStringItem(
+        dayPeriodStrings[PeriodDay.morning]!,
+        _morning,
+        _morningLinks,
+      ),
+      ChartStringItem(
+        dayPeriodStrings[PeriodDay.day]!,
+        _day,
+        _dayLinks,
+      ),
+      ChartStringItem(
+        dayPeriodStrings[PeriodDay.evening]!,
+        _evening,
+        _eveningLinks,
+      ),
+      ChartStringItem(
+        dayPeriodStrings[PeriodDay.night]!,
+        _night,
+        _nightLinks,
+      ),
+    ];
+  }
+
+  static Map<PeriodDay, String> dayPeriodMean(
+      List<ChartDataItem> postPerPeriod) {
+    final resList = <List<ChartStringItem>>[];
+    for (var i in postPerPeriod) {
+      resList.add(postAmongDayPeriod(i.posts ?? []));
+    }
+    return {
+      PeriodDay.morning:
+          getMeanFloat(resList, (e) => (e as List<ChartStringItem>)[0].item),
+      PeriodDay.day:
+          getMeanFloat(resList, (e) => (e as List<ChartStringItem>)[1].item),
+      PeriodDay.evening:
+          getMeanFloat(resList, (e) => (e as List<ChartStringItem>)[2].item),
+      PeriodDay.night:
+          getMeanFloat(resList, (e) => (e as List<ChartStringItem>)[3].item),
+    };
+  }
+
+  static String meanPost(List<ChartDataItem> postPerPeriod) =>
+      getMeanFloat(postPerPeriod, (e) => (e as ChartDataItem).item);
 }

@@ -1,5 +1,6 @@
-import 'package:diplom/bloc/detail_user_bloc/detail_user_bloc.dart';
+import 'package:diplom/bloc/choose_user_bloc/choose_user_bloc.dart';
 import 'package:diplom/utils/utils.dart';
+import 'package:diplom/widgets/custom_table.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -21,6 +22,7 @@ class MainInfo extends StatelessWidget {
       width: 0.8,
       style: BorderStyle.solid,
     );
+
     return CustomExpansionTile(
       text: 'Основная информация',
       isExpand: isExpand,
@@ -45,53 +47,45 @@ class MainInfo extends StatelessWidget {
           ),
         ),
         const Padding(padding: EdgeInsets.only(top: 8)),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: SizedBox(
-            width: 336,
-            child: Table(
-              border: TableBorder(
-                horizontalInside: _border,
-                bottom: _border,
-              ),
-              columnWidths: const {
-                0: FlexColumnWidth(3),
-                1: FlexColumnWidth(2),
-              },
-              children: [
-                TableRow(children: [
-                  const CustomTitle('Приватный аккаунт: '),
-                  CustomText('${user.isPrivet}'),
-                ]),
-                TableRow(children: [
-                  const CustomTitle('Количество записей: '),
-                  CustomText('${user.countPublished}'),
-                ]),
-                TableRow(children: [
-                  const CustomTitle('Количество подписчиков: '),
-                  CustomText('${user.subscribers}'),
-                ]),
-                TableRow(children: [
-                  const CustomTitle('Подписан на: '),
-                  CustomText('${user.countFollow}'),
-                ]),
-                TableRow(children: [
-                  const CustomTitle('Последняя дата активности: '),
-                  CustomText('${user.getLastActivityDate}'),
-                ]),
-                TableRow(children: [
-                  const CustomTitle('Бизнес аккаунт: '),
-                  CustomText('${user.isBusiness}'),
-                ]),
-                if (user.isBusiness)
-                  TableRow(children: [
-                    const CustomTitle('Категория бизнес аккаунта: '),
-                    CustomText('${user.typeBusiness}'),
-                  ]),
-              ],
-            ),
-          ),
-        ),
+        CustomTable(flexFirst: 4, children: [
+          TableRow(children: [
+            const CustomTitle('Приватный аккаунт: '),
+            CustomText('${user.isPrivet}'),
+          ]),
+          TableRow(children: [
+            const CustomTitle('Количество записей: '),
+            CustomText('${user.countPublished}'),
+          ]),
+          TableRow(children: [
+            const CustomTitle('Среднее количество записей в приложении: '),
+            CustomText('${context.watch<ChooseUserBloc>().meanPosts}'),
+          ]),
+          TableRow(children: [
+            const CustomTitle('Количество подписчиков: '),
+            CustomText('${user.subscribers}'),
+          ]),
+          TableRow(children: [
+            const CustomTitle('Среднее количество подписчиков в приложении: '),
+            CustomText('${context.watch<ChooseUserBloc>().meanSubs}'),
+          ]),
+          TableRow(children: [
+            const CustomTitle('Подписан на: '),
+            CustomText('${user.countFollow}'),
+          ]),
+          TableRow(children: [
+            const CustomTitle('Последняя дата активности: '),
+            CustomText('${user.getLastActivityDate}'),
+          ]),
+          TableRow(children: [
+            const CustomTitle('Бизнес аккаунт: '),
+            CustomText('${user.isBusiness}'),
+          ]),
+          if (user.isBusiness)
+            TableRow(children: [
+              const CustomTitle('Категория бизнес аккаунта: '),
+              CustomText('${user.typeBusiness}'),
+            ]),
+        ]),
         const Padding(padding: EdgeInsets.only(top: 20)),
         RichText(
           text: TextSpan(

@@ -32,6 +32,8 @@ class DetailUserBloc extends Cubit<DetailUserState> {
 
   User get user => _user ?? User();
 
+  UserPosts get allPosts => _posts;
+
   UserPosts get posts {
     if (dateRange != null) {
       return _posts.getPostInRange(dateRange!);

@@ -13,6 +13,8 @@ class FriendInfoBloc extends Cubit<FriendInfoState> {
   }) : super(FriendInfoLoading()) {
     if (name != null) {
       _getInfo();
+    } else {
+      addInitialEvent();
     }
   }
 

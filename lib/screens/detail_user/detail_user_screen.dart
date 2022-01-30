@@ -1,11 +1,17 @@
+// ignore_for_file: lines_longer_than_80_chars
+
 import 'package:diplom/bloc/choose_user_bloc/choose_user_bloc.dart';
 import 'package:diplom/bloc/detail_user_bloc/detail_user_bloc.dart';
+import 'package:diplom/models/chart_item.dart';
+import 'package:diplom/models/post.dart';
 import 'package:diplom/screens/links_screen.dart';
 import 'package:diplom/utils/utils.dart';
 import 'package:diplom/widgets/calendar.dart';
 import 'package:diplom/widgets/charts/chart_day_post.dart';
 import 'package:diplom/widgets/charts/chart_like_count.dart';
+import 'package:diplom/widgets/charts/chart_true_false.dart';
 import 'package:diplom/widgets/charts/chart_user_count.dart';
+import 'package:diplom/widgets/custom_table.dart';
 import 'package:diplom/widgets/html_container.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -67,19 +73,38 @@ class _Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _posts = context.watch<DetailUserBloc>().posts;
+    final _allPosts = context.watch<DetailUserBloc>().allPosts;
+
+    final _dayPost = _posts.postPerPeriod(DateType.day);
+    final _monthsPost = _posts.postPerPeriod(DateType.month);
+
+    final _allDayPost = _allPosts.postPerPeriod(DateType.day);
+    final _allDaysMean = PostFunc.meanPost(_allDayPost);
+    final _allMonthsMean =
+        PostFunc.meanPost(_allPosts.postPerPeriod(DateType.month));
 
     return ListView(
       padding: Constants.listPadding,
       children: [
         const UserTitle(),
         MainInfo(user: context.watch<DetailUserBloc>().user),
-
         const _HelpText(),
         CustomExpansionTile(
           text: 'Постов в месяц',
           children: <Widget>[
+            CustomTable(children: [
+              TableRow(children: [
+                const CustomTitle('ср.з. постов в день за все время: '),
+                CustomText('$_allMonthsMean'),
+              ]),
+              TableRow(children: [
+                const CustomTitle('ср.з. постов в день за выбранный период: '),
+                CustomText('${PostFunc.meanPost(_monthsPost)}'),
+              ]),
+            ]),
+            const Padding(padding: EdgeInsets.only(top: 20)),
             ChartDayPost(
-              data: _posts.postPerPeriod(DateType.month),
+              data: _monthsPost,
               dateFormat: DateFormat.MMM(),
             )
           ],
@@ -87,21 +112,47 @@ class _Body extends StatelessWidget {
         CustomExpansionTile(
           text: 'Постов в день',
           children: <Widget>[
-            ChartDayPost(data: _posts.postPerPeriod(DateType.day))
+            CustomTable(children: [
+              TableRow(children: [
+                const CustomTitle('ср.з. постов в день за все время: '),
+                CustomText('$_allDaysMean'),
+              ]),
+              TableRow(children: [
+                const CustomTitle('ср.з. постов в день за выбранный период: '),
+                CustomText('${PostFunc.meanPost(_dayPost)}'),
+              ]),
+            ]),
+            const Padding(padding: EdgeInsets.only(top: 20)),
+            ChartDayPost(data: _dayPost)
           ],
         ),
         CustomExpansionTile(
           text: 'Постов в течении дня',
-          children: <Widget>[ChartAmongDayPost(data: _posts.postAmongDay())],
+          children: <Widget>[
+            const CustomTitle('За выбранное время: '),
+            ..._dayPeriodMean(_dayPost),
+            const CustomTitle('За все время: '),
+            ..._dayPeriodMean(_allDayPost),
+            const Padding(padding: EdgeInsets.only(top: 20)),
+            ChartCurricular(data: PostFunc.postAmongDayPeriod(_posts.posts)),
+            const Padding(padding: EdgeInsets.only(top: 20)),
+            ChartAmongDayPost(data: _posts.postAmongDay()),
+          ],
         ),
-        // CustomExpansionTile(
-        //   text: 'Количество коммерческих постов',
-        //   children: <Widget>[ChartTrueFalse(data: _posts.isCommercialData)],
-        // ),
-
         CustomExpansionTile(
           text: 'Количество лайков в постах',
           children: <Widget>[
+            CustomTable(children: [
+              TableRow(children: [
+                const CustomTitle('ср.з. лайков к посту за все время: '),
+                CustomText('${_allPosts.meanLikes}'),
+              ]),
+              TableRow(children: [
+                const CustomTitle('ср.з. лайков к посту за выбранный период: '),
+                CustomText('${_posts.meanLikes}'),
+              ]),
+            ]),
+            const Padding(padding: EdgeInsets.only(top: 20)),
             ChartLikeCount(
               data: _posts.likeCountByPostData,
               title: 'лайки',
@@ -111,16 +162,37 @@ class _Body extends StatelessWidget {
         CustomExpansionTile(
           text: 'Количество комментариев в постах',
           children: <Widget>[
+            CustomTable(children: [
+              TableRow(children: [
+                const CustomTitle('ср.з. комментариев к посту за все время: '),
+                CustomText('${_allPosts.meanComment}'),
+              ]),
+              TableRow(children: [
+                const CustomTitle(
+                    'ср.з. комментариев к посту за выбранный период: '),
+                CustomText('${_posts.meanComment}'),
+              ]),
+            ]),
+            const Padding(padding: EdgeInsets.only(top: 20)),
             ChartLikeCount(
               data: _posts.commentCountByPostData,
               title: 'комментарии',
             )
           ],
         ),
-
         CustomExpansionTile(
           text: hashtag[0],
           children: <Widget>[
+            CustomTable(children: [
+              TableRow(children: [
+                const CustomTitle('ср.з. тэгов к посту за все время: '),
+                CustomText('${_allPosts.meanTags}'),
+              ]),
+              TableRow(children: [
+                const CustomTitle('ср.з. тэгов к посту за выбранный период: '),
+                CustomText('${_posts.meanTags}'),
+              ]),
+            ]),
             ChartUserCount(
               data: _posts.getTagsChartData,
               text: hashtag,
@@ -140,6 +212,38 @@ class _Body extends StatelessWidget {
         const SafeArea(top: false, child: SizedBox()),
       ],
     );
+  }
+
+  String? dayPStr(PeriodDay per) => dayPeriodStrings[per]?.toLowerCase();
+
+  List<Widget> _dayPeriodMean(List<ChartDataItem> postPerPeriod) {
+    final items = PostFunc.dayPeriodMean(postPerPeriod);
+    return [
+      CustomTable(children: [
+        TableRow(children: [
+          CustomTitle('Cр.з. постов ${dayPStr(PeriodDay.morning)}: '),
+          CustomText('${items[PeriodDay.morning]}'),
+        ]),
+      ]),
+      CustomTable(children: [
+        TableRow(children: [
+          CustomTitle('Cр.з. постов ${dayPStr(PeriodDay.day)}: '),
+          CustomText('${items[PeriodDay.day]}'),
+        ]),
+      ]),
+      CustomTable(children: [
+        TableRow(children: [
+          CustomTitle('Cр.з. постов ${dayPStr(PeriodDay.evening)}: '),
+          CustomText('${items[PeriodDay.evening]}'),
+        ]),
+      ]),
+      CustomTable(children: [
+        TableRow(children: [
+          CustomTitle('Cр.з. постов ${dayPStr(PeriodDay.night)}: '),
+          CustomText('${items[PeriodDay.night]}'),
+        ]),
+      ]),
+    ];
   }
 }
 

@@ -4,11 +4,17 @@ import 'package:diplom/models/post.dart';
 import 'package:diplom/utils/utils.dart';
 
 class ChartDataItem {
-  const ChartDataItem(this.date, this.item, {required this.links});
+  const ChartDataItem(
+    this.date,
+    this.item, {
+    required this.links,
+    this.posts,
+  });
 
   final DateTime date;
   final int item;
   final List<String> links;
+  final List<Post>? posts;
 
   DateTime get getDay => date.toDay();
   DateTime get getHour => date.toHour();

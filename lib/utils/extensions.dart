@@ -5,6 +5,28 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 enum DateType { day, month, year, hour }
 
+String getMean<E, K extends Comparable<Object>>(
+  Iterable<E> items,
+  num Function(E) toKey,
+) {
+  num res = 0;
+  for (var i in items) {
+    res += toKey(i);
+  }
+  return '${res ~/ items.length}';
+}
+
+String getMeanFloat<E, K extends Comparable<Object>>(
+  Iterable<E> items,
+  num Function(E) toKey,
+) {
+  num res = 0;
+  for (var i in items) {
+    res += toKey(i);
+  }
+  return (res / items.length).toStringAsFixed(2);
+}
+
 extension Convert on DateTime {
   DateTime toDay() {
     return DateTime(year, month, day);

@@ -20,6 +20,10 @@ class ChooseUserBloc extends Cubit<ChooseUserState> {
   void addLoadingEvent() => emit(ChooseUserLoading());
   void addSuccessEvent() => emit(ChooseUserSuccess());
 
+  String get meanSubs => getMean(_users, (e) => (e as User).subscribers);
+
+  String get meanPosts => getMean(_users, (e) => (e as User).countPublished);
+
   List<User> _users = const [];
 
   List<User> get users => _isRevers ? _sortUsers.reversed.toList() : _sortUsers;
