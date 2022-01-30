@@ -18,8 +18,8 @@ class CustomHtml extends StatelessWidget {
     }
     return Column(
       children: [
-        Html(data: page(url)),
-        const Padding(padding: EdgeInsets.only(top: 4)),
+        // Html(data: page(url)),
+        // const Padding(padding: EdgeInsets.only(top: 4)),
         Linkify(
           onOpen: _onOpen,
           text: url,

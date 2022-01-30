@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:diplom/models/hashtag.dart';
 import 'package:diplom/models/user.dart';
 
 import 'user_api.dart';
@@ -20,5 +21,13 @@ class UserRepository {
 
   Future<Response> delUser(int id) async {
     return await _api.deleteUser(id);
+  }
+
+  Future<User> getInfoUser(String name) async {
+    return await _api.getInfoUser(name);
+  }
+
+  Future<Hashtag> getInfoHashtag(String tag) async {
+    return await _api.getInfoHashtag(tag);
   }
 }

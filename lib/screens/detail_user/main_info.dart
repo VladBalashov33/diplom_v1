@@ -6,13 +6,16 @@ import 'package:url_launcher/url_launcher.dart';
 
 class MainInfo extends StatelessWidget {
   const MainInfo({
+    required this.user,
+    this.isExpand = false,
     Key? key,
   }) : super(key: key);
 
+  final User user;
+  final bool isExpand;
+
   @override
   Widget build(BuildContext context) {
-    final user = context.watch<DetailUserBloc>().user;
-
     final _border = BorderSide(
       color: AppColors.primary.withOpacity(0.8),
       width: 0.8,
@@ -20,6 +23,7 @@ class MainInfo extends StatelessWidget {
     );
     return CustomExpansionTile(
       text: 'Основная информация',
+      isExpand: isExpand,
       children: <Widget>[
         const Padding(padding: EdgeInsets.only(top: 16)),
         RichText(

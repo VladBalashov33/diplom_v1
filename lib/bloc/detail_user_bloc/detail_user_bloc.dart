@@ -50,12 +50,12 @@ class DetailUserBloc extends Cubit<DetailUserState> {
     emit(state);
   }
 
-  List<String> _postLinks = [];
-  List<String> get postLinks => _postLinks;
-  void Function(List<String>)? setPostLinks(List<String> value) {
-    _postLinks = value;
-    emit(state);
-  }
+  // List<String> _postLinks = [];
+  // List<String> get postLinks => _postLinks;
+  // void Function(List<String>)? setPostLinks(List<String> value) {
+  //   _postLinks = value;
+  //   emit(state);
+  // }
 
   Future<void> getUser() async {
     addLoadingEvent();

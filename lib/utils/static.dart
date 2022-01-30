@@ -7,7 +7,7 @@ import 'utils.dart';
 class Static {
   Static._();
 
-  static Dio dio({String? newUrl}) {
+  static Dio dio({String? newUrl, bool responseBody = true}) {
     final baseClient = Dio(
       BaseOptions(
         baseUrl: newUrl ?? ApiPath.baseUrl,
@@ -16,7 +16,7 @@ class Static {
     baseClient.interceptors.add(
       LogInterceptor(
         requestBody: true,
-        responseBody: true,
+        responseBody: responseBody,
         logPrint: (value) => log('$value'),
       ),
     );

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:diplom/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -76,26 +78,33 @@ class Post {
       createdTime: json['created_time'] ?? '',
     );
   }
-  // factory Post.fromJson(Map<String, dynamic> json) {
-  //   return Post(
-  //     takenAt: json['taken_at'] ?? 0,
-  //     id: json['id'] ?? '',
-  //     mediaType: json['media_type'] ?? 0,
-  //     location: CustomLocation.fromJson(json['location'] ?? {}),
-  //     shouldRequestAds: json['should_request_ads'] ?? false,
-  //     likeAndViewCountsDisabled: json['like_and_view_counts_disabled'] ?? false,
-  //     isCommercial: json['is_commercial'] ?? false,
-  //     isPaidPartnership: json['is_paid_partnership'] ?? false,
-  //     commentCount: json['comment_count'] ?? 0,
-  //     likeCount: json['like_count'] ?? 0,
-  //     link: json['link'] ?? '',
-  //     createdTime: json['created_time'] ?? '',
-  //     type: json['type'] ?? '',
-  //     // TODO: list tags and user in photos
-  //     tags: [], // json['tags'],
-  //     usersInPhoto: [], // json['users_in_photo'],
-  //   );
-  // }
+
+  factory Post.mock(String id) {
+    final random = Random();
+
+    return Post(
+      id: id,
+      takenAt: DateTime.now().subtract(
+        Duration(days: random.nextInt(100), hours: random.nextInt(20)),
+      ),
+      link: 'https://www.instagram.com/p/CZBiQnrqOiv/',
+      type: '',
+      likeCount: random.nextInt(100000),
+      mediaType: random.nextInt(100000),
+      commentCount: random.nextInt(100000),
+      tags: ['голубыеволосы'],
+      usersInPhoto: [
+        'https://scontent-arn2-1.cdninstagram.com/v/t51.2885-15/e35/241371015_254217719900017_8328479284927476423_n.jpg?_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_cat=101&_nc_ohc=5vdUj8a_8FgAX83b5yG&tn=XI0rXWnqJHTR41IU&edm=ABZsPhsBAAAA&ccb=7-4&ig_cache_key=MjY1NjU3NDI5Nzc4MDUxMTA1MA%3D%3D.2-ccb7-4&oh=00_AT9sIgoq90OAIpXP-Lqc9OQnuUfIZCeGnbmTfGHJJ7PWiA&oe=61FD42CC&_nc_sid=4efc9f'
+      ],
+      //===
+      location: CustomLocation.fromJson({}),
+      shouldRequestAds: false,
+      likeAndViewCountsDisabled: false,
+      isCommercial: false,
+      isPaidPartnership: false,
+      createdTime: '',
+    );
+  }
 
   DateTime get getTime => takenAt;
 }

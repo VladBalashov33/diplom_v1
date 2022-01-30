@@ -98,9 +98,30 @@ class User {
     );
   }
 
+  factory User.fromJsonInst(Map<String, dynamic> json, String link) {
+    json = json['graphql']['user'];
+    return User(
+      // id: json['id'] ?? 0,
+      username: json['username'] ?? '',
+      name: json['full_name'] ?? '',
+      url: link,
+      countPublished: json['edge_owner_to_timeline_media']['count'] ?? 0,
+      subscribers: json['edge_follow']['count'] ?? 0,
+      countFollow: json['edge_followed_by']['count'] ?? 0,
+      isBusiness: json['is_business_account'] ?? false,
+      description: json['biography'] ?? '',
+      typeBusiness: json['business_category_name'] ?? '',
+    );
+  }
+
   factory User.mock({int? id}) {
     final random = Random();
     final _postsStat = UserPosts.init;
+
+    for (var i = 0; i < 100; i++) {
+      final _post = Post.mock('$i');
+      _postsStat.addPost(_post);
+    }
 
     // for (var i in postJson['res'] as List) {
     //   final _post = Post.fromJson(i);
@@ -128,6 +149,7 @@ class User {
       ],
       isBusiness: random.nextBool(),
       typeBusiness: 'Волк',
+      postInfo: _postsStat,
     );
   }
 

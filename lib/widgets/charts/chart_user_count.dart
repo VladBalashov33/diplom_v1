@@ -6,19 +6,26 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
+const List<String> hashtag = ['Хештеги', 'Нет хештегов'];
+const List<String> friends = ['Отмеченные друзья', 'Нет отмеченных друзей'];
+
 class ChartUserCount extends StatelessWidget {
-  const ChartUserCount({required this.data}) : super();
+  const ChartUserCount({
+    required this.data,
+    required this.text,
+  }) : super();
 
   final List<ChartStringItem> data;
+  final List<String> text;
 
   @override
   Widget build(BuildContext context) {
     if (data.isEmpty) {
-      return const Align(
+      return Align(
         alignment: Alignment.centerLeft,
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 12),
-          child: Text('Нет хештегов'),
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Text(text[1]),
         ),
       );
     }
@@ -46,7 +53,12 @@ class ChartUserCount extends StatelessWidget {
                 offset: Offset(-5, 0),
               ),
               onPointDoubleTap: (point) {
-                toListLinks(context, data[point.pointIndex!].links);
+                toListLinks(
+                  context,
+                  data[point.pointIndex!].links,
+                  name: data[point.pointIndex!].str,
+                  isHashtag: text[1] == hashtag[1],
+                );
               },
             ),
           ],

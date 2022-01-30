@@ -72,7 +72,7 @@ class _Body extends StatelessWidget {
       padding: Constants.listPadding,
       children: [
         const UserTitle(),
-        const MainInfo(),
+        MainInfo(user: context.watch<DetailUserBloc>().user),
 
         const _HelpText(),
         CustomExpansionTile(
@@ -119,12 +119,22 @@ class _Body extends StatelessWidget {
         ),
 
         CustomExpansionTile(
-          text: 'Хештеги',
-          children: <Widget>[ChartUserCount(data: _posts.getTagsChartData)],
+          text: hashtag[0],
+          children: <Widget>[
+            ChartUserCount(
+              data: _posts.getTagsChartData,
+              text: hashtag,
+            )
+          ],
         ),
         CustomExpansionTile(
-          text: 'Отмеченные друзья',
-          children: <Widget>[ChartUserCount(data: _posts.getFriendsChartData)],
+          text: friends[0],
+          children: <Widget>[
+            ChartUserCount(
+              data: _posts.getFriendsChartData,
+              text: friends,
+            )
+          ],
         ),
         const Padding(padding: EdgeInsets.only(top: 200)),
         const SafeArea(top: false, child: SizedBox()),
@@ -133,16 +143,21 @@ class _Body extends StatelessWidget {
   }
 }
 
-void toListLinks(BuildContext context, List<String> links) {
-  context.read<DetailUserBloc>().setPostLinks(links);
-  // Provider.of<GlobalKey<ScaffoldState>>(context, listen: false)
-  //     .currentState!
-  //     .openEndDrawer();
+void toListLinks(
+  BuildContext context,
+  List<String> links, {
+  String? name,
+  bool isHashtag = false,
+}) {
   Navigator.of(context).push(
     MaterialPageRoute(
       builder: (_) => BlocProvider.value(
         value: context.read<DetailUserBloc>(),
-        child: const LinksScreen(),
+        child: LinksScreen(
+          postLinks: links,
+          name: name,
+          isHashtag: isHashtag,
+        ),
       ),
     ),
   );
