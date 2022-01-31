@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../map.dart';
 import 'main_info.dart';
 import 'user_title.dart';
 
@@ -89,6 +90,23 @@ class _Body extends StatelessWidget {
         const UserTitle(),
         MainInfo(user: context.watch<DetailUserBloc>().user),
         const _HelpText(),
+        if (_posts.locCount != 0)
+          Align(
+            alignment: Alignment.centerLeft,
+            child: DefaultButton(
+              text: '${_posts.locCount} записей на карте',
+              width: 360,
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => MapPage(
+                      posts: _allPosts.posts,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
         CustomExpansionTile(
           text: 'Постов в месяц',
           children: <Widget>[

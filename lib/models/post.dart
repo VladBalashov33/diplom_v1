@@ -25,6 +25,8 @@ class Post {
   final String type;
   final List<String> tags;
   final List<String> usersInPhoto;
+  final double? lat;
+  final double? lon;
 
   Post({
     required this.takenAt,
@@ -42,6 +44,8 @@ class Post {
     required this.type,
     required this.tags,
     required this.usersInPhoto,
+    required this.lat,
+    required this.lon,
   });
 
   factory Post.fromJson(Map<String, dynamic> json, String id) {
@@ -77,6 +81,8 @@ class Post {
       isCommercial: json['is_commercial'] ?? false,
       isPaidPartnership: json['is_paid_partnership'] ?? false,
       createdTime: json['created_time'] ?? '',
+      lat: json['lat'],
+      lon: json['lon'],
     );
   }
 
@@ -104,9 +110,14 @@ class Post {
       isCommercial: false,
       isPaidPartnership: false,
       createdTime: '',
+      lat: (random.nextBool() && random.nextBool())
+          ? 55.0 + random.nextInt(100) / 100
+          : null,
+      lon: 30.0 + random.nextInt(1000) / 100,
     );
   }
 
+  bool get isLocation => lat != null && lon != null;
   DateTime get getTime => takenAt;
   PeriodDay get getDayPeriod {
     final date = getTime.toHour().hour;
@@ -294,6 +305,16 @@ class UserPosts {
   String get meanComment => getMean(posts, (e) => (e as Post).commentCount);
 
   String get meanTags => getMean(tagsCountList, (e) => e as int);
+
+  int get locCount {
+    var res = 0;
+    for (var i in posts) {
+      if (i.isLocation) {
+        res += 1;
+      }
+    }
+    return res;
+  }
 }
 
 class PostFunc {

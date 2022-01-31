@@ -16,10 +16,10 @@ class UserApi with SendWithToastMixin {
   final token = LocalStorageApi.instance.getToken();
 
   Future<List<User>> getUsers() async {
-    return [
-      User.mock(id: 1),
-      User.mock(id: 2),
-    ];
+    // return [
+    //   User.mock(id: 1),
+    //   User.mock(id: 2),
+    // ];
     final Response response = await sendWithToast(
       tryBloc: _client.get(
         ApiPath.users,
@@ -30,7 +30,7 @@ class UserApi with SendWithToastMixin {
   }
 
   Future<User> getUser(int id) async {
-    return User.mock(id: id);
+    // return User.mock(id: id);
     final Response response = await sendWithToast(
       tryBloc: _client.get(
         ApiPath.user(id),

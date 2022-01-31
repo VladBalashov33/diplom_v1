@@ -22,7 +22,7 @@ class LinksScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ссылки на посты'),
+        title: Text(name ?? 'Ссылки на посты'),
       ),
       body: BlocProviderBuilder<FriendInfoBloc, FriendInfoState>(
         create: (context) => FriendInfoBloc(isHashtag: isHashtag, name: name),
