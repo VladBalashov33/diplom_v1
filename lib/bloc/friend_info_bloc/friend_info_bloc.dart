@@ -24,6 +24,7 @@ class FriendInfoBloc extends Cubit<FriendInfoState> {
 
   void addInitialEvent() => emit(FriendInfoInitial());
   void addLoadingEvent() => emit(FriendInfoLoading());
+  void addErrEvent() => emit(FriendInfoErr());
 
   Hashtag? hashtag;
   User? friend;
@@ -36,15 +37,15 @@ class FriendInfoBloc extends Cubit<FriendInfoState> {
         addInitialEvent();
       }, onError: (e) {
         print('=getInfo=$e==');
-        addInitialEvent();
+        addErrEvent();
       });
     } else {
-      return _repository.getInfoUser('yonpura1986').then((value) {
+      return _repository.getInfoUser(name!).then((value) {
         friend = value;
         addInitialEvent();
       }, onError: (e) {
         print('=getInfo=$e==');
-        addInitialEvent();
+        addErrEvent();
       });
     }
   }

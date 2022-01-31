@@ -4,13 +4,14 @@ import 'package:flutter/material.dart';
 
 class UserTitle extends StatelessWidget {
   const UserTitle({
+    required this.user,
     Key? key,
   }) : super(key: key);
 
+  final User user;
+
   @override
   Widget build(BuildContext context) {
-    final user = context.watch<DetailUserBloc>().user;
-
     return Row(
       children: [
         CachedImage(

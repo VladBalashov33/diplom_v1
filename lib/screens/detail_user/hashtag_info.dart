@@ -65,7 +65,7 @@ class HashtagInfo extends StatelessWidget {
                 TableRow(children: [
                   const CustomTitle(
                       'Количество постов с хештегом у пользователя: '),
-                  CustomText('${tag.mediaCount}'),
+                  CustomText('${tag.userPostCount}'),
                 ]),
               ],
             ),

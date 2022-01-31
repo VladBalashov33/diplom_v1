@@ -79,8 +79,6 @@ class UserApi with SendWithToastMixin {
         options: Options(headers: {'Content-Type': 'application/json'}),
       ),
     );
-    final aa = response.data;
-    final aas = ApiPath.userLink(name);
     return User.fromJsonInst(response.data, ApiPath.userLink(name));
   }
 }

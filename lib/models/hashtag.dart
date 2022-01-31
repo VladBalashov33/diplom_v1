@@ -16,9 +16,11 @@ class Hashtag {
   });
 
   factory Hashtag.fromJson(Map<String, dynamic> json) {
+    json = json['graphql']['hashtag'];
+
     return Hashtag(
       id: '${json['id'] ?? 0}',
-      mediaCount: json['media_count'] ?? 0,
+      mediaCount: json['edge_hashtag_to_media']['count'] ?? 0,
       pic: json['profile_pic_url'],
     );
   }

@@ -32,7 +32,7 @@ class LinksScreen extends StatelessWidget {
           }
           return Column(
             children: [
-              if (name != null)
+              if (name != null && state is! FriendInfoErr)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: isHashtag
@@ -47,6 +47,7 @@ class LinksScreen extends StatelessWidget {
                       : context.watch<FriendInfoBloc>().friend != null
                           ? MainInfo(
                               user: context.watch<FriendInfoBloc>().friend!,
+                              isExpand: true,
                             )
                           : const SizedBox(),
                 ),

@@ -6,3 +6,5 @@ abstract class FriendInfoState {}
 class FriendInfoInitial extends FriendInfoState {}
 
 class FriendInfoLoading extends FriendInfoState {}
+
+class FriendInfoErr extends FriendInfoState {}

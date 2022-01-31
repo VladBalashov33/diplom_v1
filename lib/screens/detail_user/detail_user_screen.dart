@@ -87,7 +87,7 @@ class _Body extends StatelessWidget {
     return ListView(
       padding: Constants.listPadding,
       children: [
-        const UserTitle(),
+        UserTitle(user: context.watch<DetailUserBloc>().user),
         MainInfo(user: context.watch<DetailUserBloc>().user),
         const _HelpText(),
         if (_posts.locCount != 0)
