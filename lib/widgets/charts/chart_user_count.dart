@@ -7,7 +7,10 @@ import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 const List<String> hashtag = ['Хештеги', 'Нет хештегов'];
-const List<String> friends = ['Отмеченные друзья', 'Нет отмеченных друзей'];
+const List<String> friends = [
+  'Отмеченные пользователи',
+  'Нет отмеченных пользователей'
+];
 
 class ChartUserCount extends StatelessWidget {
   const ChartUserCount({

@@ -35,6 +35,7 @@ class _MyAppState extends State<MyApp> {
       ],
       child: MaterialApp(
         initialRoute: '/',
+        debugShowCheckedModeBanner: false,
         builder: BotToastInit(),
         navigatorObservers: [BotToastNavigatorObserver()],
         localizationsDelegates: const [
