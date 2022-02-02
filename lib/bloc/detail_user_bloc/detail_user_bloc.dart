@@ -61,7 +61,10 @@ class DetailUserBloc extends Cubit<DetailUserState> {
 
   Future<void> getUser() async {
     addLoadingEvent();
-    return _repository.getUser(id).then((value) {
+    final date1 = await DateTime.now();
+    return _repository.getUser(id).then((value) async {
+      final date2 = await DateTime.now();
+      print('=getUser =${date1.difference(date2).inMilliseconds}==');
       _user = value;
       addPostsEvent();
     }, onError: (e) {

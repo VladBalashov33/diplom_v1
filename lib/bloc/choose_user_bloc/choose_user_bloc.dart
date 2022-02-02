@@ -78,7 +78,10 @@ class ChooseUserBloc extends Cubit<ChooseUserState> {
 
   Future<void> getUsers() async {
     addLoadingEvent();
+    final date1 = DateTime.now();
     return _repository.getUsers().then((value) {
+      final date2 = DateTime.now();
+      print('=getUsers=${date1.difference(date2).inMilliseconds}==');
       _users = value;
       subsRangeInit = getInitSubsRange(_users);
       _subsRange = subsRangeInit;

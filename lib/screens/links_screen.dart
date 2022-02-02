@@ -34,37 +34,38 @@ class LinksScreen extends StatelessWidget {
           }
           return Column(
             children: [
-              if (name != null && state is! FriendInfoErr) ...[
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: isHashtag
-                      ? HashtagInfo(
-                          tag: context
-                              .watch<FriendInfoBloc>()
-                              .hashtag!
-                              .copyWith(
-                                  link: ApiPath.hashtagLink(name!),
-                                  userPostCount: postLinks.length),
-                        )
-                      : context.watch<FriendInfoBloc>().friend != null
-                          ? MainInfo(
-                              user: context.watch<FriendInfoBloc>().friend!,
-                              isExpand: true,
-                            )
-                          : const SizedBox(),
-                ),
-              ] else ...[
-                const CustomTitle('Ссылка но объект: '),
-                Linkify(
-                  onOpen: _onOpen,
-                  text: isHashtag
-                      ? ApiPath.hashtagLink(name!)
-                      : ApiPath.getInfoUser(name!),
-                  overflow: TextOverflow.fade,
-                  maxLines: 1,
-                  softWrap: false,
-                ),
-              ],
+              if (name != null)
+                if (state is! FriendInfoErr) ...[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: isHashtag
+                        ? HashtagInfo(
+                            tag: context
+                                .watch<FriendInfoBloc>()
+                                .hashtag!
+                                .copyWith(
+                                    link: ApiPath.hashtagLink(name!),
+                                    userPostCount: postLinks.length),
+                          )
+                        : context.watch<FriendInfoBloc>().friend != null
+                            ? MainInfo(
+                                user: context.watch<FriendInfoBloc>().friend!,
+                                isExpand: true,
+                              )
+                            : const SizedBox(),
+                  ),
+                ] else ...[
+                  const CustomTitle('Ссылка но объект: '),
+                  Linkify(
+                    onOpen: _onOpen,
+                    text: isHashtag
+                        ? ApiPath.hashtagLink(name!)
+                        : ApiPath.getInfoUser(name!),
+                    overflow: TextOverflow.fade,
+                    maxLines: 1,
+                    softWrap: false,
+                  ),
+                ],
               Expanded(
                 child: ListView.separated(
                   padding:

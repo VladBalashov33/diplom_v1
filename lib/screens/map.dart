@@ -61,6 +61,45 @@ class _MapPageState extends State<MapPage> {
           ));
         }
       }
+      _worldWonders.add(_WonderDetails(
+        place: (await placemarkFromCoordinates(
+          55.782097,
+          37.724802,
+          localeIdentifier: 'ru_RU',
+        ))
+            .first,
+        latitude: 55.782097,
+        longitude: 37.724802,
+        link: widget.posts[0].link,
+        date: DateFormat('dd MMMM yyyy / hh:mm')
+            .format(DateTime(2022, 01, 15, 21, 30)),
+      ));
+      _worldWonders.add(_WonderDetails(
+        place: (await placemarkFromCoordinates(
+          55.814750,
+          37.555249,
+          localeIdentifier: 'ru_RU',
+        ))
+            .first,
+        latitude: 55.814750,
+        longitude: 37.555249,
+        link: widget.posts[1].link,
+        date: DateFormat('dd MMMM yyyy / hh:mm')
+            .format(DateTime(2022, 01, 16, 11, 50)),
+      ));
+      _worldWonders.add(_WonderDetails(
+        place: (await placemarkFromCoordinates(
+          55.804220,
+          37.736530,
+          localeIdentifier: 'ru_RU',
+        ))
+            .first,
+        latitude: 55.804220,
+        longitude: 37.736530,
+        link: widget.posts[2].link,
+        date: DateFormat('dd MMMM yyyy / hh:mm')
+            .format(DateTime(2022, 01, 17, 15, 21)),
+      ));
       MapLatLng? mapLatLng;
       try {
         mapLatLng = MapLatLng(
@@ -83,7 +122,7 @@ class _MapPageState extends State<MapPage> {
 
     _zoomPanBehavior = MapZoomPanBehavior(
       minZoomLevel: 3,
-      maxZoomLevel: 10,
+      maxZoomLevel: 16,
       enableDoubleTapZooming: true,
     );
   }
@@ -104,7 +143,7 @@ class _MapPageState extends State<MapPage> {
         themeData.platform == TargetPlatform.windows ||
         themeData.platform == TargetPlatform.linux;
     if (_canUpdateZoomLevel) {
-      _zoomPanBehavior.zoomLevel = _isDesktop ? 5 : 4;
+      _zoomPanBehavior.zoomLevel = _isDesktop ? 12 : 11;
       _canUpdateZoomLevel = false;
     }
     _cardHeight = (MediaQuery.of(context).orientation == Orientation.landscape)
