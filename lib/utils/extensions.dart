@@ -13,7 +13,11 @@ String getMean<E, K extends Comparable<Object>>(
   for (var i in items) {
     res += toKey(i);
   }
-  return '${res ~/ items.length}';
+  try {
+    return '${res ~/ items.length}';
+  } catch (e) {
+    return '${res ~/ 1}';
+  }
 }
 
 String getMeanFloat<E, K extends Comparable<Object>>(
@@ -24,7 +28,11 @@ String getMeanFloat<E, K extends Comparable<Object>>(
   for (var i in items) {
     res += toKey(i);
   }
-  return (res / items.length).toStringAsFixed(2);
+  try {
+    return (res / items.length).toStringAsFixed(2);
+  } catch (e) {
+    return (res / 1).toStringAsFixed(2);
+  }
 }
 
 extension Convert on DateTime {

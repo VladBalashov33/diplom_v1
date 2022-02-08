@@ -25,8 +25,6 @@ class Post {
   final String type;
   final List<String> tags;
   final List<String> usersInPhoto;
-  final double? lat;
-  final double? lon;
 
   Post({
     required this.takenAt,
@@ -44,8 +42,6 @@ class Post {
     required this.type,
     required this.tags,
     required this.usersInPhoto,
-    required this.lat,
-    required this.lon,
   });
 
   factory Post.fromJson(Map<String, dynamic> json, String id) {
@@ -81,8 +77,6 @@ class Post {
       isCommercial: json['is_commercial'] ?? false,
       isPaidPartnership: json['is_paid_partnership'] ?? false,
       createdTime: json['created_time'] ?? '',
-      lat: json['lat'],
-      lon: json['lon'],
     );
   }
 
@@ -104,20 +98,21 @@ class Post {
         'https://scontent-arn2-1.cdninstagram.com/v/t51.2885-15/e35/241371015_254217719900017_8328479284927476423_n.jpg?_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_cat=101&_nc_ohc=5vdUj8a_8FgAX83b5yG&tn=XI0rXWnqJHTR41IU&edm=ABZsPhsBAAAA&ccb=7-4&ig_cache_key=MjY1NjU3NDI5Nzc4MDUxMTA1MA%3D%3D.2-ccb7-4&oh=00_AT9sIgoq90OAIpXP-Lqc9OQnuUfIZCeGnbmTfGHJJ7PWiA&oe=61FD42CC&_nc_sid=4efc9f'
       ],
       //===
-      location: CustomLocation.fromJson({}),
+      location: CustomLocation.fromJson({
+        'lat': (random.nextBool() && random.nextBool())
+            ? 55.0 + random.nextInt(100) / 100
+            : null,
+        'lng': 30.0 + random.nextInt(1000) / 100,
+      }),
       shouldRequestAds: false,
       likeAndViewCountsDisabled: false,
       isCommercial: false,
       isPaidPartnership: false,
       createdTime: '',
-      lat: (random.nextBool() && random.nextBool())
-          ? 55.0 + random.nextInt(100) / 100
-          : null,
-      lon: 30.0 + random.nextInt(1000) / 100,
     );
   }
 
-  bool get isLocation => lat != null && lon != null;
+  bool get isLocation => location.lat != null && location.lng != null;
   DateTime get getTime => takenAt;
   PeriodDay get getDayPeriod {
     final date = getTime.toHour().hour;

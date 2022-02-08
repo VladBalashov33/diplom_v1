@@ -1,3 +1,4 @@
+import 'package:diplom/models/location.dart';
 import 'package:diplom/models/post.dart';
 import 'package:diplom/utils/utils.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -44,62 +45,40 @@ class _MapPageState extends State<MapPage> {
     if (!isLoad) {
       for (var i in widget.posts) {
         if (i.isLocation) {
-          print('==${_worldWonders.length}/${widget.posts.length}==');
-          final placemarks = kIsWeb
-              ? []
-              : await placemarkFromCoordinates(
-                  i.lat!,
-                  i.lon!,
-                  localeIdentifier: 'ru_RU',
-                ).timeout(const Duration(seconds: 1), onTimeout: () => []);
-          _worldWonders.add(_WonderDetails(
-            place: placemarks.isNotEmpty ? placemarks.first : null,
-            latitude: i.lat!,
-            longitude: i.lon!,
-            link: i.link,
-            date: DateFormat('dd MMMM yyyy / hh:mm').format(i.getTime),
-          ));
+          if (i.location.isAddress)
+          // print('==${_worldWonders.length}/${widget.posts.length}==');
+          // final placemarks = kIsWeb
+          //     ? []
+          //     : await placemarkFromCoordinates(
+          //         i.location.lat!,
+          //         i.location.lng!,
+          //         localeIdentifier: 'ru_RU',
+          //       ).timeout(const Duration(seconds: 1), onTimeout: () => []);
+          {
+            _worldWonders.add(_WonderDetails(
+              place: i.location,
+              latitude: i.location.lat!,
+              longitude: i.location.lng!,
+              link: i.link,
+              date: DateFormat('dd MMMM yyyy / hh:mm').format(i.getTime),
+            ));
+          }
         }
       }
-      _worldWonders.add(_WonderDetails(
-        place: (await placemarkFromCoordinates(
-          55.782097,
-          37.724802,
-          localeIdentifier: 'ru_RU',
-        ))
-            .first,
-        latitude: 55.782097,
-        longitude: 37.724802,
-        link: widget.posts[0].link,
-        date: DateFormat('dd MMMM yyyy / hh:mm')
-            .format(DateTime(2022, 01, 15, 21, 30)),
-      ));
-      _worldWonders.add(_WonderDetails(
-        place: (await placemarkFromCoordinates(
-          55.814750,
-          37.555249,
-          localeIdentifier: 'ru_RU',
-        ))
-            .first,
-        latitude: 55.814750,
-        longitude: 37.555249,
-        link: widget.posts[1].link,
-        date: DateFormat('dd MMMM yyyy / hh:mm')
-            .format(DateTime(2022, 01, 16, 11, 50)),
-      ));
-      _worldWonders.add(_WonderDetails(
-        place: (await placemarkFromCoordinates(
-          55.804220,
-          37.736530,
-          localeIdentifier: 'ru_RU',
-        ))
-            .first,
-        latitude: 55.804220,
-        longitude: 37.736530,
-        link: widget.posts[2].link,
-        date: DateFormat('dd MMMM yyyy / hh:mm')
-            .format(DateTime(2022, 01, 17, 15, 21)),
-      ));
+      // _worldWonders.add(_WonderDetails(
+      //   place: (await placemarkFromCoordinates(
+      //     55.782097,
+      //     37.724802,
+      //     localeIdentifier: 'ru_RU',
+      //   ))
+      //       .first,
+      //   latitude: 55.782097,
+      //   longitude: 37.724802,
+      //   link: widget.posts[0].link,
+      //   date: DateFormat('dd MMMM yyyy / hh:mm')
+      //       .format(DateTime(2022, 01, 15, 21, 30)),
+      // ));
+
       MapLatLng? mapLatLng;
       try {
         mapLatLng = MapLatLng(
@@ -376,7 +355,7 @@ class _Card extends StatelessWidget {
                         Expanded(
                           child: Text(
                             item.place != null
-                                ? '${item.place?.name}, ${item.place?.street}, ${item.place?.country}'
+                                ? '${item.place?.name}, ${item.place?.city}'
                                 : '',
                           ),
                         ),
@@ -435,7 +414,7 @@ class _WonderDetails {
     this.date = '',
   });
 
-  final Placemark? place;
+  final CustomLocation? place;
   final double latitude;
   final double longitude;
   final String link;

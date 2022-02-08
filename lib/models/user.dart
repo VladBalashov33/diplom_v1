@@ -13,6 +13,7 @@ class User {
   final String name;
   final String username;
   final String? photo;
+  final String? filePic;
   final num subscribers;
 
   final bool isPrivet;
@@ -32,6 +33,7 @@ class User {
     this.name = '',
     this.username = '',
     this.photo,
+    this.filePic,
     this.subscribers = 0,
     this.isPrivet = false,
     this.url = '',
@@ -85,6 +87,7 @@ class User {
       countFollow: json['following_count'] ?? 0,
       url: json['instagram_link'] ?? '',
       photo: json['pic'],
+      filePic: json['file_pic'],
       lastActivity: dateTime,
       isBusiness: json['is_business'] ?? false,
       postInfo: _postsStat,

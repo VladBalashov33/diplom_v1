@@ -90,24 +90,24 @@ class _Body extends StatelessWidget {
         UserTitle(user: context.watch<DetailUserBloc>().user),
         MainInfo(user: context.watch<DetailUserBloc>().user),
         const _HelpText(),
-        // if (_posts.locCount != 0)
-        Align(
-          alignment: Alignment.centerLeft,
-          child: DefaultButton(
-            // text: 'записи на карте - ${_posts.locCount}',
-            text: 'записи на карте - 3',
-            width: 360,
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => MapPage(
-                    posts: _allPosts.posts,
+        if (_posts.locCount != 0)
+          Align(
+            alignment: Alignment.centerLeft,
+            child: DefaultButton(
+              text: 'записи на карте - ${_posts.locCount}',
+              // text: 'записи на карте - 3',
+              width: 360,
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => MapPage(
+                      posts: _allPosts.posts,
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
-        ),
         CustomExpansionTile(
           text: 'Постов в месяц',
           children: <Widget>[

@@ -25,4 +25,5 @@ class CustomLocation {
       lat: json['lat'] ?? json['longitude'],
     );
   }
+  bool get isAddress => name != '' || address != '' || city != '';
 }
