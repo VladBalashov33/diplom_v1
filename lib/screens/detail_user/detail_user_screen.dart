@@ -410,7 +410,7 @@ class _Drawer extends StatelessWidget {
               child: const Text('ОК'),
               onPressed: () {
                 onDel();
-
+                Navigator.pop(context);
                 Navigator.pop(context);
               },
             ),

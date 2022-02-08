@@ -31,6 +31,7 @@ class UserListItem extends StatelessWidget {
             user.photo,
             height: 93,
             width: 113,
+            alt: user.username.replaceAll('.', ''),
           ),
           const Padding(padding: EdgeInsets.only(left: 8)),
           Column(

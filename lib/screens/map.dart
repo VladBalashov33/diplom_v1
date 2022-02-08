@@ -60,7 +60,7 @@ class _MapPageState extends State<MapPage> {
               latitude: i.location.lat!,
               longitude: i.location.lng!,
               link: i.link,
-              date: DateFormat('dd MMMM yyyy / hh:mm').format(i.getTime),
+              date: DateFormat('dd MMMM yyyy / HH:mm').format(i.getTime),
             ));
           }
         }

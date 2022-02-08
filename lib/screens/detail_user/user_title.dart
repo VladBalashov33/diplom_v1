@@ -18,6 +18,7 @@ class UserTitle extends StatelessWidget {
           user.photo,
           height: 168,
           width: 204,
+          alt: user.username.replaceAll('.', ''),
         ),
         const Padding(padding: EdgeInsets.only(left: 8)),
         SizedBox(
